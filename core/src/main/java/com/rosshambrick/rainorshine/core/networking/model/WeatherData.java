@@ -1,4 +1,4 @@
-package com.rosshambrick.rainorshine.networking.model;
+package com.rosshambrick.rainorshine.core.networking.model;
 
 import java.util.List;
 

@@ -8,8 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.rosshambrick.rainorshine.R;
-import com.rosshambrick.rainorshine.model.WeatherData;
-import com.rosshambrick.rainorshine.networking.WebClient;
+import com.rosshambrick.rainorshine.core.networking.model.WeatherData;
 
 import javax.inject.Inject;
 

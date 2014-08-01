@@ -8,14 +8,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.rosshambrick.rainorshine.R;
-import com.rosshambrick.rainorshine.model.WeatherData;
 import com.rosshambrick.rainorshine.model.services.WeatherRepo;
-import com.rosshambrick.rainorshine.networking.WebClient;
+import com.rosshambrick.rainorshine.core.networking.WeatherWebClient;
+import com.rosshambrick.rainorshine.core.networking.model.WeatherData;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -23,7 +22,7 @@ public class WeatherDetailFragment extends RainOrShineFragment {
 
     private static final String CITY_ID = "city_id";
 
-    @Inject WebClient mWebClient;
+    @Inject WeatherWebClient mWeatherWebClient;
     @Inject WeatherRepo mWeatherRepo;
     @Inject Observable<WeatherData> mWeatherDataObservable;
 
