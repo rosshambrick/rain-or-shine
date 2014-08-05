@@ -8,17 +8,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.rosshambrick.rainorshine.R;
-import com.rosshambrick.rainorshine.model.services.WeatherRepo;
-import com.rosshambrick.rainorshine.core.networking.WeatherWebClient;
+import com.rosshambrick.rainorshine.core.model.entities.CityWeather;
+import com.rosshambrick.rainorshine.core.model.services.WeatherRepo;
 import com.rosshambrick.rainorshine.core.networking.model.WeatherData;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class WeatherDetailFragment extends RainOrShineFragment {
 
@@ -56,8 +54,8 @@ public class WeatherDetailFragment extends RainOrShineFragment {
         super.onActivityCreated(savedInstanceState);
 
         mSubscription = AndroidObservable.bindFragment(this, mWeatherRepo.getCityById(mCityId))
-                .subscribe(new Action1<WeatherData>() {
-                    public void call(WeatherData weatherData) {
+                .subscribe(new Action1<CityWeather>() {
+                    public void call(CityWeather weatherData) {
                         display(weatherData);
                     }
                 });
@@ -69,7 +67,7 @@ public class WeatherDetailFragment extends RainOrShineFragment {
         mSubscription.unsubscribe();
     }
 
-    private void display(WeatherData weatherData) {
-        getActivity().setTitle(weatherData.name);
+    private void display(CityWeather weatherData) {
+        getActivity().setTitle(weatherData.getName());
     }
 }

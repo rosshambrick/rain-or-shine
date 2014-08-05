@@ -1,5 +1,7 @@
 package com.rosshambrick.rainorshine.core.networking.model;
 
+import com.rosshambrick.rainorshine.core.model.entities.CityWeather;
+
 import java.util.List;
 
 public class WeatherData {
@@ -66,5 +68,13 @@ public class WeatherData {
 //        }
 //        String s = builder.toString();
         return name;
+    }
+
+    public CityWeather toCityWeather() {
+        CityWeather cityWeather = new CityWeather();
+        cityWeather.setId(id);
+        cityWeather.setName(name);
+        cityWeather.setTemperatureInKelvin(main.temp);
+        return cityWeather;
     }
 }

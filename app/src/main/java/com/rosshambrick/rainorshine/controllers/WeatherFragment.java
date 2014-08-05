@@ -13,10 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rosshambrick.rainorshine.R;
-import com.rosshambrick.rainorshine.core.networking.model.WeatherData;
-import com.rosshambrick.rainorshine.model.services.WeatherRepo;
+import com.rosshambrick.rainorshine.core.model.entities.CityWeather;
+import com.rosshambrick.rainorshine.core.model.services.WeatherRepo;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -25,15 +25,14 @@ import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 
 public class WeatherFragment extends RainOrShineFragment
-        implements AdapterView.OnItemClickListener, Observer<WeatherData> {
+        implements AdapterView.OnItemClickListener, Observer<List<CityWeather>> {
 
     private static final String TAG = WeatherFragment.class.getSimpleName();
 
-    @Inject WeatherRepo mCitiesWeatherData;
+    @Inject WeatherRepo mWeatherRepo;
 
     private ListView mListView;
     private Subscription mSubscription;
-    private ArrayList<WeatherData> mCityWeathers = new ArrayList<WeatherData>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +47,8 @@ public class WeatherFragment extends RainOrShineFragment
         super.onActivityCreated(savedInstanceState);
 
         getActivity().setProgressBarIndeterminateVisibility(true);
-        mSubscription = AndroidObservable.bindFragment(this, mCitiesWeatherData.getCitiesWithWeather())
+        mSubscription = AndroidObservable
+                .bindFragment(this, mWeatherRepo.getCitiesWithWeatherObservable())
                 .subscribe(this);
     }
 
@@ -73,16 +73,15 @@ public class WeatherFragment extends RainOrShineFragment
     }
 
     @Override
-    public void onNext(WeatherData weatherData) {
+    public void onNext(List<CityWeather> weatherData) {
         Log.d(TAG, "onNext");
-        mCityWeathers.add(weatherData);
+        mListView.setAdapter(new WeatherDataAdapter(weatherData));
+        getActivity().setProgressBarIndeterminateVisibility(false);
     }
 
     @Override
     public void onCompleted() {
-        Log.d(TAG, "onCompleted");
-        mListView.setAdapter(new WeatherDataAdapter(mCityWeathers));
-        getActivity().setProgressBarIndeterminateVisibility(false);
+        // do nothing
     }
 
     @Override
@@ -90,14 +89,14 @@ public class WeatherFragment extends RainOrShineFragment
         Toast.makeText(getActivity(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
     }
 
-    private class WeatherDataAdapter extends ArrayAdapter<WeatherData> {
-        public WeatherDataAdapter(ArrayList<WeatherData> weatherData) {
+    private class WeatherDataAdapter extends ArrayAdapter<CityWeather> {
+        public WeatherDataAdapter(List<CityWeather> weatherData) {
             super(getActivity(), 0, weatherData);
         }
 
         @Override
         public long getItemId(int position) {
-            return getItem(position).id;
+            return getItem(position).getId();
         }
 
         @Override
@@ -117,13 +116,10 @@ public class WeatherFragment extends RainOrShineFragment
                 viewHolder = (ViewHolder) cityView.getTag();
             }
 
-            WeatherData cityWeather = getItem(position);
+            CityWeather cityWeather = getItem(position);
 
-            double tempInKelvin = cityWeather.main.temp;
-            long tempInFahrenheit = Math.round((tempInKelvin - 273.15) * 1.8000 + 32.00);
-
-            viewHolder.cityNameView.setText(String.format("%s", cityWeather.name));
-            viewHolder.cityTempView.setText(String.format("%s\u00B0F", tempInFahrenheit));
+            viewHolder.cityNameView.setText(String.format("%s", cityWeather.getName()));
+            viewHolder.cityTempView.setText(String.format("%s\u00B0F", cityWeather.getTemperatrureInFahrenheit()));
 
             return cityView;
         }

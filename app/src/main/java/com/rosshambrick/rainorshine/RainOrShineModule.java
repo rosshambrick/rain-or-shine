@@ -5,10 +5,10 @@ import com.rosshambrick.rainorshine.controllers.WeatherDetailFragment;
 import com.rosshambrick.rainorshine.controllers.WeatherFragment;
 import com.rosshambrick.rainorshine.core.networking.CitiesWebClient;
 import com.rosshambrick.rainorshine.core.networking.WeatherWebClient;
-import com.rosshambrick.rainorshine.model.events.NetworkCallEndedEvent;
-import com.rosshambrick.rainorshine.model.events.NetworkCallStartedEvent;
-import com.rosshambrick.rainorshine.model.events.NetworkErrorOccurred;
-import com.rosshambrick.rainorshine.model.services.WeatherRepo;
+import com.rosshambrick.rainorshine.core.model.events.NetworkCallEndedEvent;
+import com.rosshambrick.rainorshine.core.model.events.NetworkCallStartedEvent;
+import com.rosshambrick.rainorshine.core.model.events.NetworkErrorOccurred;
+import com.rosshambrick.rainorshine.core.model.services.WeatherRepo;
 
 import javax.inject.Singleton;
 
@@ -30,9 +30,10 @@ import retrofit.RetrofitError;
 public class RainOrShineModule {
 
     @Provides
+    @Singleton
     public WeatherWebClient provideWeatherWebClient() {
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setServer("http://api.openweathermap.org/data/2.5")
+                .setEndpoint("http://api.openweathermap.org/data/2.5")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setErrorHandler(new ErrorHandler() {
                     @Override
@@ -41,26 +42,15 @@ public class RainOrShineModule {
                         return retrofitError;
                     }
                 })
-//                .setProfiler(new Profiler() {
-//                    @Override
-//                    public Object beforeCall() {
-//                        EventBus.getDefault().post(new NetworkCallStartedEvent());
-//                        return null;
-//                    }
-//
-//                    @Override
-//                    public void afterCall(RequestInformation requestInformation, long l, int i, Object o) {
-//                        EventBus.getDefault().post(new NetworkCallEndedEvent());
-//                    }
-//                })
                 .build();
         return restAdapter.create(WeatherWebClient.class);
     }
 
     @Provides
+    @Singleton
     public CitiesWebClient provideCitiesWebClient() {
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setServer("http://api.geonames.org/")
+                .setEndpoint("http://api.geonames.org/")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setErrorHandler(new ErrorHandler() {
                     @Override

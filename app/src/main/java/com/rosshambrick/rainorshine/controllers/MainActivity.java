@@ -8,9 +8,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.rosshambrick.rainorshine.R;
-import com.rosshambrick.rainorshine.model.events.NetworkCallEndedEvent;
-import com.rosshambrick.rainorshine.model.events.NetworkCallStartedEvent;
-import com.rosshambrick.rainorshine.model.events.NetworkErrorOccurred;
+import com.rosshambrick.rainorshine.core.model.events.NetworkErrorOccurred;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

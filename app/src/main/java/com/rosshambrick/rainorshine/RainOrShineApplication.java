@@ -2,6 +2,7 @@ package com.rosshambrick.rainorshine;
 
 import android.app.Application;
 import android.app.FragmentManager;
+import android.util.Log;
 
 import dagger.ObjectGraph;
 
