@@ -14,6 +14,8 @@ import com.rosshambrick.rainorshine.core.model.services.WeatherRepo;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -24,7 +26,10 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
 
     @Inject WeatherRepo mWeatherRepo;
 
-    private TextView mCityView;
+    @InjectView(R.id.fragment_weather_detail_current_temperature) TextView mCurrentTemperature;
+    @InjectView(R.id.fragment_weather_detail_high_temperature) TextView mHighTemperature;
+    @InjectView(R.id.fragment_weather_detail_low_temperature) TextView mLowTemperature;
+
     private long mCityId;
     private Subscription mSubscription;
 
@@ -45,7 +50,7 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weather_detail, container, false);
-        mCityView = (TextView) view.findViewById(R.id.fragment_weather_detail_temperature);
+        ButterKnife.inject(this, view);
         return view;
     }
 
@@ -80,5 +85,8 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
 
     private void display(CityWeather weatherData) {
         getActivity().setTitle(weatherData.getName());
+        mCurrentTemperature.setText(weatherData.getFormattedCurrentTempInFahrenheit());
+        mHighTemperature.setText(weatherData.getFormattedHighTempInFahrenheit());
+        mLowTemperature.setText(weatherData.getFormattedLowTempInFahrenheit());
     }
 }

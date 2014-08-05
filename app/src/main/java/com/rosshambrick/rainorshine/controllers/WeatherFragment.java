@@ -119,7 +119,7 @@ public class WeatherFragment extends RainOrShineFragment
             CityWeather cityWeather = getItem(position);
 
             viewHolder.cityNameView.setText(String.format("%s", cityWeather.getName()));
-            viewHolder.cityTempView.setText(String.format("%s\u00B0F", cityWeather.getTemperatrureInFahrenheit()));
+            viewHolder.cityTempView.setText(cityWeather.getFormattedCurrentTempInFahrenheit());
 
             return cityView;
         }

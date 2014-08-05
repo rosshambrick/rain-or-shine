@@ -3,7 +3,9 @@ package com.rosshambrick.rainorshine.core.model.entities;
 public class CityWeather {
     private long mId;
     private String mName;
-    private double mTemperatureInKelvin;
+    private double mCurrentTempInKelvin;
+    private double mHighTempInKelvin;
+    private double mLowTempInKelvin;
 
     public long getId() {
         return mId;
@@ -21,15 +23,47 @@ public class CityWeather {
         return mName;
     }
 
-    public void setTemperatureInKelvin(double temperatureInKelvin) {
-        mTemperatureInKelvin = temperatureInKelvin;
+    public void setCurrentTempInKelvin(double currentTempInKelvin) {
+        mCurrentTempInKelvin = currentTempInKelvin;
     }
 
-    public double getTemperatureInKelvin() {
-        return mTemperatureInKelvin;
+    public void setHighTempInKelvin(double highTempInKelvin) {
+        mHighTempInKelvin = highTempInKelvin;
     }
 
-    public double getTemperatrureInFahrenheit() {
-        return Math.round((mTemperatureInKelvin - 273.15) * 1.8000 + 32.00);
+    public void setLowTempInKelvin(double lowTempInKelvin) {
+        mLowTempInKelvin = lowTempInKelvin;
+    }
+
+    public double getCurrentTempInFahrenheit() {
+        return toFahrenheit(mCurrentTempInKelvin);
+    }
+
+    public double getHighTempInFahrenheit() {
+        return toFahrenheit(mHighTempInKelvin);
+    }
+
+    private double getLowTempInFahrenheit() {
+        return toFahrenheit(mLowTempInKelvin);
+    }
+
+    public String getFormattedCurrentTempInFahrenheit() {
+        return toFormattedTempInFahrenheit(getCurrentTempInFahrenheit());
+    }
+
+    public String getFormattedHighTempInFahrenheit() {
+        return toFormattedTempInFahrenheit(getHighTempInFahrenheit());
+    }
+
+    public String getFormattedLowTempInFahrenheit() {
+        return toFormattedTempInFahrenheit(getLowTempInFahrenheit());
+    }
+
+    private double toFahrenheit(double kelvin) {
+        return Math.round((kelvin - 273.15) * 1.8000 + 32.00);
+    }
+
+    private String toFormattedTempInFahrenheit(double fahrenheit) {
+        return String.format("%.0f\u00B0F", fahrenheit);
     }
 }

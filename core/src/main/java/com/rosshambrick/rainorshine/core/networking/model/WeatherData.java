@@ -74,7 +74,9 @@ public class WeatherData {
         CityWeather cityWeather = new CityWeather();
         cityWeather.setId(id);
         cityWeather.setName(name);
-        cityWeather.setTemperatureInKelvin(main.temp);
+        cityWeather.setCurrentTempInKelvin(main.temp);
+        cityWeather.setHighTempInKelvin(main.temp_max);
+        cityWeather.setLowTempInKelvin(main.temp_min);
         return cityWeather;
     }
 }
