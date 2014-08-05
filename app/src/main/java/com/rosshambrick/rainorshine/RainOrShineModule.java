@@ -36,7 +36,6 @@ public class RainOrShineModule {
                 .setEndpoint("http://api.openweathermap.org/data/2.5")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setErrorHandler(new ErrorHandler() {
-                    @Override
                     public Throwable handleError(RetrofitError retrofitError) {
                         EventBus.getDefault().post(new NetworkErrorOccurred(retrofitError));
                         return retrofitError;
@@ -53,20 +52,17 @@ public class RainOrShineModule {
                 .setEndpoint("http://api.geonames.org/")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setErrorHandler(new ErrorHandler() {
-                    @Override
                     public Throwable handleError(RetrofitError retrofitError) {
                         EventBus.getDefault().post(new NetworkErrorOccurred(retrofitError));
                         return retrofitError;
                     }
                 })
                 .setProfiler(new Profiler() {
-                    @Override
                     public Object beforeCall() {
                         EventBus.getDefault().post(new NetworkCallStartedEvent());
                         return null;
                     }
 
-                    @Override
                     public void afterCall(RequestInformation requestInformation, long l, int i, Object o) {
                         EventBus.getDefault().post(new NetworkCallEndedEvent());
                     }
