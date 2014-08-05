@@ -8,7 +8,7 @@ import rx.Observable;
 
 public interface WeatherWebClient {
     @GET("/weather")
-    Observable<WeatherData> getWeatherByQuery(@Query("q") String place);
+    WeatherData getWeatherByQuery(@Query("q") String place);
 
     @GET("/weather")
     Observable<WeatherData> getWeatherById(@Query("id") long id);

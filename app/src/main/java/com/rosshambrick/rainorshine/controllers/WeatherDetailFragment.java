@@ -15,6 +15,8 @@ import com.rosshambrick.rainorshine.core.networking.model.WeatherData;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -22,12 +24,11 @@ public class WeatherDetailFragment extends RainOrShineFragment {
 
     private static final String CITY_ID = "city_id";
 
-    @Inject WeatherWebClient mWeatherWebClient;
     @Inject WeatherRepo mWeatherRepo;
-    @Inject Observable<WeatherData> mWeatherDataObservable;
 
     private TextView mCityView;
     private long mCityId;
+    private Subscription mSubscription;
 
     public static Fragment newInstance(long id) {
         Fragment fragment = new WeatherDetailFragment();
@@ -54,17 +55,18 @@ public class WeatherDetailFragment extends RainOrShineFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mWeatherDataObservable
-                .filter(new Func1<WeatherData, Boolean>() {
-                    public Boolean call(WeatherData weatherData) {
-                        return weatherData.id == mCityId;
-                    }
-                })
+        mSubscription = AndroidObservable.bindFragment(this, mWeatherRepo.getCityById(mCityId))
                 .subscribe(new Action1<WeatherData>() {
                     public void call(WeatherData weatherData) {
                         display(weatherData);
                     }
                 });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mSubscription.unsubscribe();
     }
 
     private void display(WeatherData weatherData) {

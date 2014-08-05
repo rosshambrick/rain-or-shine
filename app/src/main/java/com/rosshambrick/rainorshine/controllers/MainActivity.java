@@ -54,17 +54,17 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onEventMainThread(NetworkCallStartedEvent event) {
-        if (mNetworkCount.getAndIncrement() == 0) {
-            setProgressBarIndeterminateVisibility(true);
-        }
-    }
-
-    public void onEventMainThread(NetworkCallEndedEvent event) {
-        if (mNetworkCount.decrementAndGet() == 0) {
-            setProgressBarIndeterminateVisibility(false);
-        }
-    }
+//    public void onEventMainThread(NetworkCallStartedEvent event) {
+//        if (mNetworkCount.getAndIncrement() == 0) {
+//            setProgressBarIndeterminateVisibility(true);
+//        }
+//    }
+//
+//    public void onEventMainThread(NetworkCallEndedEvent event) {
+//        if (mNetworkCount.decrementAndGet() == 0) {
+//            setProgressBarIndeterminateVisibility(false);
+//        }
+//    }
 
     public void onEventMainThread(NetworkErrorOccurred event) {
         Toast.makeText(this, "Error: " + event.getRetrofitError(), Toast.LENGTH_LONG).show();

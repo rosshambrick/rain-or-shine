@@ -10,7 +10,7 @@ public class RainOrShineApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        FragmentManager.enableDebugLogging(BuildConfig.DEBUG);
+//        FragmentManager.enableDebugLogging(BuildConfig.DEBUG);
 
         RainOrShineModule module = new RainOrShineModule();
         ObjectGraph objectGraph = ObjectGraph.create(module);
