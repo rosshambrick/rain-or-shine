@@ -8,9 +8,9 @@
     tools:context=".controllers.MainActivity">
 
     <TextView
-        android:id="@+id/fragment_weather_detail.city"
+        android:id="@+id/fragment_weather_detail.temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="City Name Here"/>
+        tools:text="88F"/>
 
 </LinearLayout>
