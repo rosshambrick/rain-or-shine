@@ -14,7 +14,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subjects.AsyncSubject;
 
 public class WeatherRepo {
 
@@ -22,7 +21,7 @@ public class WeatherRepo {
 
     private WeatherWebClient mWeatherWebClient;
     private CitiesWebClient mCitiesWebClient;
-    private AsyncSubject<List<CityWeather>> mCityWeathersSubject;
+    private Observable<List<CityWeather>> mCityWeatherCache;
 
     @Inject
     public WeatherRepo(WeatherWebClient weatherWebClient, CitiesWebClient citiesWebClient) {
@@ -31,7 +30,7 @@ public class WeatherRepo {
     }
 
     public Observable<CityWeather> getCityById(final long cityId) {
-        return mCityWeathersSubject
+        return mCityWeatherCache
                 .subscribeOn(Schedulers.computation())
                 .flatMap(new Func1<List<CityWeather>, Observable<? extends CityWeather>>() {
                     @Override
@@ -48,10 +47,8 @@ public class WeatherRepo {
     }
 
     public Observable<List<CityWeather>> getCitiesWithWeatherObservable() {
-        if (mCityWeathersSubject == null) {
-            mCityWeathersSubject = AsyncSubject.create();
-
-            mCitiesWebClient.getCities()
+        if (mCityWeatherCache == null) {
+            mCityWeatherCache = mCitiesWebClient.getCities()
                     .flatMap(new Func1<CitiesData, Observable<? extends String>>() {
                         @Override
                         public Observable<? extends String> call(final CitiesData citiesData) {
@@ -86,10 +83,10 @@ public class WeatherRepo {
                     })
                     .toList()
                     .subscribeOn(Schedulers.io())
-                    .subscribe(mCityWeathersSubject);
-        }
+                    .cache();
 
-        return mCityWeathersSubject.asObservable();
+        }
+        return mCityWeatherCache;
     }
 
 }
