@@ -46,9 +46,8 @@ public class WeatherFragment extends RainOrShineFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getActivity().setProgressBarIndeterminateVisibility(true);
         mSubscription = AndroidObservable
-                .bindFragment(this, mWeatherRepo.getCitiesWithWeatherObservable())
+                .bindFragment(this, mWeatherRepo.getCitiesWithWeatherCache())
                 .subscribe(this);
     }
 
