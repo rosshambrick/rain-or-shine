@@ -76,7 +76,6 @@ public class WeatherFragment extends RainOrShineFragment
     public void onNext(List<CityWeather> weatherData) {
         Log.d(TAG, "onNext");
         mListView.setAdapter(new WeatherDataAdapter(weatherData));
-        getActivity().setProgressBarIndeterminateVisibility(false);
     }
 
     @Override

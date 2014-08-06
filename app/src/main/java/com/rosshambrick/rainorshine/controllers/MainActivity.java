@@ -8,6 +8,8 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.rosshambrick.rainorshine.R;
+import com.rosshambrick.rainorshine.core.model.events.NetworkCallEndedEvent;
+import com.rosshambrick.rainorshine.core.model.events.NetworkCallStartedEvent;
 import com.rosshambrick.rainorshine.core.model.events.NetworkErrorOccurred;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -52,17 +54,17 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-//    public void onEventMainThread(NetworkCallStartedEvent event) {
-//        if (mNetworkCount.getAndIncrement() == 0) {
-//            setProgressBarIndeterminateVisibility(true);
-//        }
-//    }
-//
-//    public void onEventMainThread(NetworkCallEndedEvent event) {
-//        if (mNetworkCount.decrementAndGet() == 0) {
-//            setProgressBarIndeterminateVisibility(false);
-//        }
-//    }
+    public void onEventMainThread(NetworkCallStartedEvent event) {
+        if (mNetworkCount.getAndIncrement() == 0) {
+            setProgressBarIndeterminateVisibility(true);
+        }
+    }
+
+    public void onEventMainThread(NetworkCallEndedEvent event) {
+        if (mNetworkCount.decrementAndGet() == 0) {
+            setProgressBarIndeterminateVisibility(false);
+        }
+    }
 
     public void onEventMainThread(NetworkErrorOccurred event) {
         Toast.makeText(this, "Error: " + event.getRetrofitError(), Toast.LENGTH_LONG).show();

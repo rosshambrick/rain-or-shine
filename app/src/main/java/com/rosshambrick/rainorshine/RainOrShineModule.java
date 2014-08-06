@@ -41,6 +41,16 @@ public class RainOrShineModule {
                         return retrofitError;
                     }
                 })
+                .setProfiler(new Profiler() {
+                    public Object beforeCall() {
+                        EventBus.getDefault().post(new NetworkCallStartedEvent());
+                        return null;
+                    }
+
+                    public void afterCall(RequestInformation requestInformation, long l, int i, Object o) {
+                        EventBus.getDefault().post(new NetworkCallEndedEvent());
+                    }
+                })
                 .build();
         return restAdapter.create(WeatherWebClient.class);
     }
