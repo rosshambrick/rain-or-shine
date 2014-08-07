@@ -3,27 +3,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:paddingLeft="8dp">
+    android:padding="@dimen/row_padding">
 
     <TextView
         android:id="@+id/row_city_name"
         android:layout_width="0dp"
-        android:layout_weight="8"
-        android:layout_height="wrap_content" />
+        android:layout_weight="5"
+        android:layout_height="wrap_content"
+        style="?android:textAppearanceLarge"/>
 
     <TextView
         android:id="@+id/row_city_temp"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        style="?android:textAppearanceLarge" />
 
     <ImageView
         android:id="@+id/row_city_weather_image"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:scaleType="centerCrop"/>
 
 </LinearLayout>

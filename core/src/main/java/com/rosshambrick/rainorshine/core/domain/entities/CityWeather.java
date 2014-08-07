@@ -7,6 +7,7 @@ public class CityWeather {
     private double mHighTempInKelvin;
     private double mLowTempInKelvin;
     private String mWeatherImageUrl;
+    private String mWeatherConditions;
 
     public long getId() {
         return mId;
@@ -74,5 +75,13 @@ public class CityWeather {
 
     public void setWeatherImageName(String weatherImageUrl) {
         mWeatherImageUrl = weatherImageUrl;
+    }
+
+    public void setWeatherConditions(String weatherConditions) {
+        mWeatherConditions = weatherConditions;
+    }
+
+    public String getWeatherConditions() {
+        return mWeatherConditions;
     }
 }

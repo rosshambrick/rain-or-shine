@@ -1,53 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/layout_padding"
     tools:context=".controllers.MainActivity">
 
-    <ImageView
-        android:id="@+id/fragment_weather_detail_weather_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <!--<TextView-->
-        <!--android:id="@+id/fragment_weather_detail_conditions"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textSize="60dp"-->
-        <!--tools:text="Sunny"/>-->
-
-    <TextView
-        android:id="@+id/fragment_weather_detail_current_temperature"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/fragment_weather_detail_weather_image"
-        android:textSize="60dp"
-        tools:text="88F"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/fragment_weather_detail_high_temperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/fragment_weather_detail_current_temperature"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="6dp"
-        android:textSize="26dp"
-        android:textColor="@android:color/holo_red_light"
-        tools:text="92F"/>
+        <ImageView
+            android:id="@+id/fragment_weather_detail_weather_image"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"/>
 
-    <TextView
-        android:id="@+id/fragment_weather_detail_low_temperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/fragment_weather_detail_current_temperature"
-        android:layout_below="@+id/fragment_weather_detail_high_temperature"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="-6dp"
-        android:textSize="26dp"
-        android:textColor="@android:color/holo_blue_light"
-        tools:text="76F"/>
+        <TextView
+            android:id="@+id/fragment_weather_detail_conditions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30dp"
+            tools:text="Sunny" />
 
-</RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/fragment_weather_detail_current_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="60dp"
+            tools:text="88F" />
+
+        <TextView
+            android:id="@+id/fragment_weather_detail_high_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/fragment_weather_detail_current_temperature"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="6dp"
+            android:textSize="26dp"
+            android:textColor="@android:color/holo_red_light"
+            tools:text="92F" />
+
+        <TextView
+            android:id="@+id/fragment_weather_detail_low_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/fragment_weather_detail_current_temperature"
+            android:layout_below="@+id/fragment_weather_detail_high_temperature"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="-6dp"
+            android:textSize="26dp"
+            android:textColor="@android:color/holo_blue_light"
+            tools:text="76F" />
+
+    </RelativeLayout>
+
+</LinearLayout>

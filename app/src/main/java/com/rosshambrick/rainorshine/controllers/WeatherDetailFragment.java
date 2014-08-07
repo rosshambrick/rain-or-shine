@@ -32,6 +32,7 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
     @InjectView(R.id.fragment_weather_detail_high_temperature) TextView mHighTemperature;
     @InjectView(R.id.fragment_weather_detail_low_temperature) TextView mLowTemperature;
     @InjectView(R.id.fragment_weather_detail_weather_image) ImageView mWeatherImage;
+    @InjectView(R.id.fragment_weather_detail_conditions) TextView mWeatherConditions;
 
     public static Fragment newInstance(long id) {
         Fragment fragment = new WeatherDetailFragment();
@@ -84,6 +85,7 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
         mCurrentTemperature.setText(weatherData.getFormattedCurrentTempInFahrenheit());
         mHighTemperature.setText(weatherData.getFormattedHighTempInFahrenheit());
         mLowTemperature.setText(weatherData.getFormattedLowTempInFahrenheit());
+        mWeatherConditions.setText(weatherData.getWeatherConditions());
         Picasso.with(getActivity())
                 .load(String.format(Urls.WEATHER_ICON_FORMAT, weatherData.getWeatherImageUrl()))
                 .into(mWeatherImage);

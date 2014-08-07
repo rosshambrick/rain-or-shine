@@ -2,8 +2,6 @@ package com.rosshambrick.rainorshine.core.networking.entities;
 
 import com.rosshambrick.rainorshine.core.domain.entities.CityWeather;
 
-import java.util.List;
-
 @SuppressWarnings("UnusedDeclaration")
 public class WeatherResponseDto {
 
@@ -74,6 +72,7 @@ public class WeatherResponseDto {
         cityWeather.setHighTempInKelvin(main.temp_max);
         cityWeather.setLowTempInKelvin(main.temp_min);
         if (weather != null && weather[0] != null) {
+            cityWeather.setWeatherConditions(weather[0].description);
             cityWeather.setWeatherImageName(weather[0].icon);
         }
         return cityWeather;
