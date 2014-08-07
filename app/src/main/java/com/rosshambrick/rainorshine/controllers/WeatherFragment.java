@@ -1,8 +1,14 @@
 package com.rosshambrick.rainorshine.controllers;
 
+import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -10,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,7 +26,7 @@ import com.rosshambrick.rainorshine.core.domain.services.WeatherStore;
 import com.rosshambrick.rainorshine.networking.Urls;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -27,35 +34,56 @@ import rx.Observer;
 import rx.android.observables.AndroidObservable;
 
 public class WeatherFragment extends RainOrShineFragment
-        implements AdapterView.OnItemClickListener, Observer<List<CityWeather>> {
+        implements AdapterView.OnItemClickListener, Observer<CityWeather> {
 
     private static final String TAG = WeatherFragment.class.getSimpleName();
+    public static final int REQUEST_SEARCH = 0;
 
     @Inject WeatherStore mWeatherStore;
 
     private ListView mListView;
+    private WeatherDataAdapter mAdapter;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         mListView = (ListView) view.findViewById(R.id.fragment_main_list);
         mListView.setOnItemClickListener(this);
+        mAdapter = new WeatherDataAdapter();
+        mListView.setAdapter(mAdapter);
         return view;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        mSubscriptions.add(AndroidObservable
-                .bindFragment(this, mWeatherStore.getCitiesWithWeatherCache())
-                .subscribe(this));
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(R.string.cities);
+        getActivity().setTitle(R.string.my_cities);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.fragment_weather, menu);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_SEARCH) {
+            String query = data.getStringExtra(SearchManager.QUERY);
+            mSubscriptions.add(AndroidObservable
+                    .bindFragment(this, mWeatherStore.getCityByName(query))
+                    .subscribe(this));
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -67,9 +95,9 @@ public class WeatherFragment extends RainOrShineFragment
     }
 
     @Override
-    public void onNext(List<CityWeather> weatherData) {
+    public void onNext(CityWeather weatherData) {
         Log.d(TAG, "onNext");
-        mListView.setAdapter(new WeatherDataAdapter(weatherData));
+        mAdapter.add(weatherData);
     }
 
     @Override
@@ -83,8 +111,8 @@ public class WeatherFragment extends RainOrShineFragment
     }
 
     private class WeatherDataAdapter extends ArrayAdapter<CityWeather> {
-        public WeatherDataAdapter(List<CityWeather> weatherData) {
-            super(getActivity(), 0, weatherData);
+        public WeatherDataAdapter() {
+            super(getActivity(), 0, new ArrayList<CityWeather>());
         }
 
         @Override

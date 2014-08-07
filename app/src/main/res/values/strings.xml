@@ -2,9 +2,10 @@
 <resources>
 
     <string name="app_name">Rain Or Shine</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="my_cities">My Cities</string>
+
     <string name="action_settings">Settings</string>
-    <string name="cities">Cities</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">City, State, Country</string>
 
 </resources>

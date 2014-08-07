@@ -1,6 +1,12 @@
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_main.list"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context="com.rosshambrick.rainorshine.controllers.MainActivity$PlaceholderFragment" />
+    android:layout_height="match_parent"
+    tools:context="com.rosshambrick.rainorshine.controllers.MainActivity$PlaceholderFragment">
+
+    <ListView
+        android:id="@+id/fragment_main_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>

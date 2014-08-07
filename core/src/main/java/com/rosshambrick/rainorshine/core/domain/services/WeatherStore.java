@@ -53,14 +53,32 @@ public class WeatherStore {
         return mCitiesWithWeatherCache;
     }
 
+    public Observable<CityWeather> getCityByName(String name) {
+        return getCityWeatherObservable(mWeatherWebClient.getWeatherByQuery(name));
+    }
+
     private Observable<List<CityWeather>> getCitiesWithWeather() {
-        return getCitiesCache()
+        Observable<WeatherResponseDto> weatherResponseDtoObservable = getCitiesCache()
                 .flatMap(new Func1<String, Observable<WeatherResponseDto>>() {
                     @Override
                     public Observable<WeatherResponseDto> call(String cityAndCountryCode) {
                         return mWeatherWebClient.getWeatherByQuery(cityAndCountryCode);
                     }
-                })
+                });
+
+        Observable<CityWeather> cityWeatherObservable = getCityWeatherObservable(weatherResponseDtoObservable);
+
+        return cityWeatherObservable
+                .toSortedList(new Func2<CityWeather, CityWeather, Integer>() {
+                    @Override
+                    public Integer call(CityWeather cityWeather, CityWeather cityWeather2) {
+                        return cityWeather.getName().compareTo(cityWeather2.getName());
+                    }
+                });
+    }
+
+    private Observable<CityWeather> getCityWeatherObservable(Observable<WeatherResponseDto> weatherResponseDtoObservable) {
+        return weatherResponseDtoObservable
                 .filter(new Func1<WeatherResponseDto, Boolean>() {
                     @Override
                     public Boolean call(WeatherResponseDto weatherResponseDto) {
@@ -71,12 +89,6 @@ public class WeatherStore {
                     @Override
                     public CityWeather call(WeatherResponseDto weatherResponseDto) {
                         return weatherResponseDto.toCityWeather();
-                    }
-                })
-                .toSortedList(new Func2<CityWeather, CityWeather, Integer>() {
-                    @Override
-                    public Integer call(CityWeather cityWeather, CityWeather cityWeather2) {
-                        return cityWeather.getName().compareTo(cityWeather2.getName());
                     }
                 });
     }
@@ -105,5 +117,4 @@ public class WeatherStore {
                     }
                 });
     }
-
 }
