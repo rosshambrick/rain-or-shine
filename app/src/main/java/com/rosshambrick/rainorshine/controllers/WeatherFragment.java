@@ -7,21 +7,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rosshambrick.rainorshine.R;
-import com.rosshambrick.rainorshine.core.model.entities.CityWeather;
-import com.rosshambrick.rainorshine.core.model.services.WeatherRepo;
+import com.rosshambrick.rainorshine.core.domain.entities.CityWeather;
+import com.rosshambrick.rainorshine.core.domain.services.WeatherStore;
+import com.rosshambrick.rainorshine.networking.Urls;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observer;
-import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 
 public class WeatherFragment extends RainOrShineFragment
@@ -29,7 +31,7 @@ public class WeatherFragment extends RainOrShineFragment
 
     private static final String TAG = WeatherFragment.class.getSimpleName();
 
-    @Inject WeatherRepo mWeatherRepo;
+    @Inject WeatherStore mWeatherStore;
 
     private ListView mListView;
 
@@ -46,7 +48,7 @@ public class WeatherFragment extends RainOrShineFragment
         super.onActivityCreated(savedInstanceState);
 
         mSubscriptions.add(AndroidObservable
-                .bindFragment(this, mWeatherRepo.getCitiesWithWeatherCache())
+                .bindFragment(this, mWeatherStore.getCitiesWithWeatherCache())
                 .subscribe(this));
     }
 
@@ -111,6 +113,10 @@ public class WeatherFragment extends RainOrShineFragment
 
             viewHolder.cityNameView.setText(String.format("%s", cityWeather.getName()));
             viewHolder.cityTempView.setText(cityWeather.getFormattedCurrentTempInFahrenheit());
+            Picasso.with(getActivity())
+                    .load(String.format(Urls.WEATHER_ICON_FORMAT, cityWeather.getWeatherImageUrl()))
+                    .into(viewHolder.cityWeatherImageView);
+
 
             return cityView;
         }
@@ -118,10 +124,12 @@ public class WeatherFragment extends RainOrShineFragment
         public class ViewHolder {
             public final TextView cityNameView;
             public final TextView cityTempView;
+            public final ImageView cityWeatherImageView;
 
             public ViewHolder(View view) {
                 cityNameView = (TextView) view.findViewById(R.id.row_city_name);
                 cityTempView = (TextView) view.findViewById(R.id.row_city_temp);
+                cityWeatherImageView = (ImageView) view.findViewById(R.id.row_city_weather_image);
             }
         }
 

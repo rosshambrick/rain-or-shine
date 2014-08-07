@@ -1,4 +1,4 @@
-package com.rosshambrick.rainorshine.core.model.entities;
+package com.rosshambrick.rainorshine.core.domain.entities;
 
 public class CityWeather {
     private long mId;
@@ -6,6 +6,7 @@ public class CityWeather {
     private double mCurrentTempInKelvin;
     private double mHighTempInKelvin;
     private double mLowTempInKelvin;
+    private String mWeatherImageUrl;
 
     public long getId() {
         return mId;
@@ -65,5 +66,13 @@ public class CityWeather {
 
     private String toFormattedTempInFahrenheit(double fahrenheit) {
         return String.format("%.0f\u00B0F", fahrenheit);
+    }
+
+    public String getWeatherImageUrl() {
+        return mWeatherImageUrl;
+    }
+
+    public void setWeatherImageName(String weatherImageUrl) {
+        mWeatherImageUrl = weatherImageUrl;
     }
 }

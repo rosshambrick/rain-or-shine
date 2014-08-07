@@ -3,12 +3,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="40dp">
+    android:layout_height="40dp"
+    android:gravity="center_vertical"
+    android:paddingLeft="8dp">
 
     <TextView
         android:id="@+id/row_city_name"
         android:layout_width="0dp"
-        android:layout_weight="4"
+        android:layout_weight="8"
         android:layout_height="wrap_content" />
 
     <TextView
@@ -16,5 +18,12 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/row_city_weather_image"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"/>
 
 </LinearLayout>

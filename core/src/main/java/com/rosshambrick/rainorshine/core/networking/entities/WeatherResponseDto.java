@@ -1,14 +1,15 @@
-package com.rosshambrick.rainorshine.core.networking.model;
+package com.rosshambrick.rainorshine.core.networking.entities;
 
-import com.rosshambrick.rainorshine.core.model.entities.CityWeather;
+import com.rosshambrick.rainorshine.core.domain.entities.CityWeather;
 
 import java.util.List;
 
-public class WeatherData {
+@SuppressWarnings("UnusedDeclaration")
+public class WeatherResponseDto {
 
     public Coordinates coord;
     public Local sys;
-    public List<Weather> weathers;
+    public Weather[] weather;
     public String base;
     public Main main;
     public Wind wind;
@@ -62,11 +63,6 @@ public class WeatherData {
 
     @Override
     public String toString() {
-//        StringBuilder builder = new StringBuilder();
-//        for (Weather weather : weathers) {
-//            builder.append(weather.description);
-//        }
-//        String s = builder.toString();
         return name;
     }
 
@@ -77,6 +73,9 @@ public class WeatherData {
         cityWeather.setCurrentTempInKelvin(main.temp);
         cityWeather.setHighTempInKelvin(main.temp_max);
         cityWeather.setLowTempInKelvin(main.temp_min);
+        if (weather != null && weather[0] != null) {
+            cityWeather.setWeatherImageName(weather[0].icon);
+        }
         return cityWeather;
     }
 }

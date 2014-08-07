@@ -5,30 +5,33 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rosshambrick.rainorshine.R;
-import com.rosshambrick.rainorshine.core.model.entities.CityWeather;
-import com.rosshambrick.rainorshine.core.model.services.WeatherRepo;
+import com.rosshambrick.rainorshine.core.domain.entities.CityWeather;
+import com.rosshambrick.rainorshine.core.domain.services.WeatherStore;
+import com.rosshambrick.rainorshine.networking.Urls;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 
 public class WeatherDetailFragment extends RainOrShineFragment implements Observer<CityWeather> {
 
     private static final String CITY_ID = "city_id";
 
-    @Inject WeatherRepo mWeatherRepo;
+    @Inject WeatherStore mWeatherStore;
 
     @InjectView(R.id.fragment_weather_detail_current_temperature) TextView mCurrentTemperature;
     @InjectView(R.id.fragment_weather_detail_high_temperature) TextView mHighTemperature;
     @InjectView(R.id.fragment_weather_detail_low_temperature) TextView mLowTemperature;
+    @InjectView(R.id.fragment_weather_detail_weather_image) ImageView mWeatherImage;
 
     public static Fragment newInstance(long id) {
         Fragment fragment = new WeatherDetailFragment();
@@ -57,7 +60,7 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
         long mCityId = getArguments().getLong(CITY_ID);
 
         mSubscriptions.add(AndroidObservable
-                .bindFragment(this, mWeatherRepo.getCityById(mCityId))
+                .bindFragment(this, mWeatherStore.getCityById(mCityId))
                 .subscribe(this));
     }
 
@@ -81,5 +84,8 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
         mCurrentTemperature.setText(weatherData.getFormattedCurrentTempInFahrenheit());
         mHighTemperature.setText(weatherData.getFormattedHighTempInFahrenheit());
         mLowTemperature.setText(weatherData.getFormattedLowTempInFahrenheit());
+        Picasso.with(getActivity())
+                .load(String.format(Urls.WEATHER_ICON_FORMAT, weatherData.getWeatherImageUrl()))
+                .into(mWeatherImage);
     }
 }

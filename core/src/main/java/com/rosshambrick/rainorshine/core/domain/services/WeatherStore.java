@@ -1,10 +1,10 @@
-package com.rosshambrick.rainorshine.core.model.services;
+package com.rosshambrick.rainorshine.core.domain.services;
 
-import com.rosshambrick.rainorshine.core.model.entities.CityWeather;
+import com.rosshambrick.rainorshine.core.domain.entities.CityWeather;
 import com.rosshambrick.rainorshine.core.networking.CitiesWebClient;
 import com.rosshambrick.rainorshine.core.networking.WeatherWebClient;
-import com.rosshambrick.rainorshine.core.networking.model.CitiesData;
-import com.rosshambrick.rainorshine.core.networking.model.WeatherData;
+import com.rosshambrick.rainorshine.core.networking.entities.CitiesData;
+import com.rosshambrick.rainorshine.core.networking.entities.WeatherResponseDto;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ import rx.Subscriber;
 import rx.functions.Func1;
 import rx.functions.Func2;
 
-public class WeatherRepo {
+public class WeatherStore {
 
-    private static final String TAG = WeatherRepo.class.getSimpleName();
+    private static final String TAG = WeatherStore.class.getSimpleName();
 
     private WeatherWebClient mWeatherWebClient;
     private CitiesWebClient mCitiesWebClient;
@@ -25,7 +25,7 @@ public class WeatherRepo {
     private Observable<String> mCitiesCache;
 
     @Inject
-    public WeatherRepo(WeatherWebClient weatherWebClient, CitiesWebClient citiesWebClient) {
+    public WeatherStore(WeatherWebClient weatherWebClient, CitiesWebClient citiesWebClient) {
         mWeatherWebClient = weatherWebClient;
         mCitiesWebClient = citiesWebClient;
     }
@@ -55,22 +55,22 @@ public class WeatherRepo {
 
     private Observable<List<CityWeather>> getCitiesWithWeather() {
         return getCitiesCache()
-                .flatMap(new Func1<String, Observable<WeatherData>>() {
+                .flatMap(new Func1<String, Observable<WeatherResponseDto>>() {
                     @Override
-                    public Observable<WeatherData> call(String cityAndCountryCode) {
+                    public Observable<WeatherResponseDto> call(String cityAndCountryCode) {
                         return mWeatherWebClient.getWeatherByQuery(cityAndCountryCode);
                     }
                 })
-                .filter(new Func1<WeatherData, Boolean>() {
+                .filter(new Func1<WeatherResponseDto, Boolean>() {
                     @Override
-                    public Boolean call(WeatherData weatherData) {
-                        return weatherData.id != 0;
+                    public Boolean call(WeatherResponseDto weatherResponseDto) {
+                        return weatherResponseDto.id != 0;
                     }
                 })
-                .map(new Func1<WeatherData, CityWeather>() {
+                .map(new Func1<WeatherResponseDto, CityWeather>() {
                     @Override
-                    public CityWeather call(WeatherData weatherData) {
-                        return weatherData.toCityWeather();
+                    public CityWeather call(WeatherResponseDto weatherResponseDto) {
+                        return weatherResponseDto.toCityWeather();
                     }
                 })
                 .toSortedList(new Func2<CityWeather, CityWeather, Integer>() {

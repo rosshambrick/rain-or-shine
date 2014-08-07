@@ -1,4 +1,4 @@
-package com.rosshambrick.rainorshine.core.model.events;
+package com.rosshambrick.rainorshine.core.networking.events;
 
 import retrofit.RetrofitError;
 

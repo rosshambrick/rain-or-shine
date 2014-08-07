@@ -3,12 +3,12 @@ package com.rosshambrick.rainorshine;
 import com.rosshambrick.rainorshine.controllers.MainActivity;
 import com.rosshambrick.rainorshine.controllers.WeatherDetailFragment;
 import com.rosshambrick.rainorshine.controllers.WeatherFragment;
+import com.rosshambrick.rainorshine.core.domain.services.WeatherStore;
 import com.rosshambrick.rainorshine.core.networking.CitiesWebClient;
 import com.rosshambrick.rainorshine.core.networking.WeatherWebClient;
-import com.rosshambrick.rainorshine.core.model.events.NetworkCallEndedEvent;
-import com.rosshambrick.rainorshine.core.model.events.NetworkCallStartedEvent;
-import com.rosshambrick.rainorshine.core.model.events.NetworkErrorOccurred;
-import com.rosshambrick.rainorshine.core.model.services.WeatherRepo;
+import com.rosshambrick.rainorshine.core.networking.events.NetworkCallEndedEvent;
+import com.rosshambrick.rainorshine.core.networking.events.NetworkCallStartedEvent;
+import com.rosshambrick.rainorshine.core.networking.events.NetworkErrorOccurred;
 
 import javax.inject.Singleton;
 
@@ -83,7 +83,7 @@ public class RainOrShineModule {
 
     @Provides
     @Singleton
-    public WeatherRepo provideWeatherRepo(WeatherWebClient weatherWebClient, CitiesWebClient citiesWebClient) {
-        return new WeatherRepo(weatherWebClient, citiesWebClient);
+    public WeatherStore provideWeatherRepo(WeatherWebClient weatherWebClient, CitiesWebClient citiesWebClient) {
+        return new WeatherStore(weatherWebClient, citiesWebClient);
     }
 }
