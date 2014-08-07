@@ -32,7 +32,6 @@ public class WeatherFragment extends RainOrShineFragment
     @Inject WeatherRepo mWeatherRepo;
 
     private ListView mListView;
-    private Subscription mSubscription;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,21 +45,15 @@ public class WeatherFragment extends RainOrShineFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mSubscription = AndroidObservable
+        mSubscriptions.add(AndroidObservable
                 .bindFragment(this, mWeatherRepo.getCitiesWithWeatherCache())
-                .subscribe(this);
+                .subscribe(this));
     }
 
     @Override
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.cities);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mSubscription.unsubscribe();
     }
 
     @Override

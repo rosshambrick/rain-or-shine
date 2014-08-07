@@ -30,9 +30,6 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
     @InjectView(R.id.fragment_weather_detail_high_temperature) TextView mHighTemperature;
     @InjectView(R.id.fragment_weather_detail_low_temperature) TextView mLowTemperature;
 
-    private long mCityId;
-    private Subscription mSubscription;
-
     public static Fragment newInstance(long id) {
         Fragment fragment = new WeatherDetailFragment();
         Bundle args = new Bundle();
@@ -44,7 +41,6 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCityId = getArguments().getLong(CITY_ID);
     }
 
     @Override
@@ -57,15 +53,12 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mSubscription = AndroidObservable
-                .bindFragment(this, mWeatherRepo.getCityById(mCityId))
-                .subscribe(this);
-    }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mSubscription.unsubscribe();
+        long mCityId = getArguments().getLong(CITY_ID);
+
+        mSubscriptions.add(AndroidObservable
+                .bindFragment(this, mWeatherRepo.getCityById(mCityId))
+                .subscribe(this));
     }
 
     @Override
