@@ -27,11 +27,15 @@ import com.rosshambrick.rainorshine.networking.Urls;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
+import rx.functions.Action1;
 
 public class WeatherFragment extends RainOrShineFragment
         implements AdapterView.OnItemClickListener, Observer<CityWeather> {
@@ -41,7 +45,7 @@ public class WeatherFragment extends RainOrShineFragment
 
     @Inject WeatherStore mWeatherStore;
 
-    private ListView mListView;
+    @InjectView(R.id.fragment_main_list) ListView mListView;
     private WeatherDataAdapter mAdapter;
 
     @Override
@@ -53,11 +57,26 @@ public class WeatherFragment extends RainOrShineFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        mListView = (ListView) view.findViewById(R.id.fragment_main_list);
+        ButterKnife.inject(this, view);
+
         mListView.setOnItemClickListener(this);
-        mAdapter = new WeatherDataAdapter();
+
+        mAdapter = new WeatherDataAdapter(getActivity());
         mListView.setAdapter(mAdapter);
+
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mSubscriptions.add(AndroidObservable
+                .bindFragment(this, mWeatherStore.getTop(5))
+                .subscribe(new Action1<List<CityWeather>>() {
+                    public void call(List<CityWeather> cityWeathers) {
+                        mAdapter.addAll(cityWeathers);
+                    }
+                }));
     }
 
     @Override
@@ -111,8 +130,8 @@ public class WeatherFragment extends RainOrShineFragment
     }
 
     private class WeatherDataAdapter extends ArrayAdapter<CityWeather> {
-        public WeatherDataAdapter() {
-            super(getActivity(), 0, new ArrayList<CityWeather>());
+        public WeatherDataAdapter(Context context) {
+            super(context, 0, new ArrayList<CityWeather>());
         }
 
         @Override

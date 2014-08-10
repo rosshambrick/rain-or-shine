@@ -7,7 +7,7 @@ import retrofit.http.GET;
 import retrofit.http.Query;
 import rx.Observable;
 
-public interface WeatherWebClient {
+public interface RemoteWeatherStore {
     @GET("/weather")
     Observable<WeatherResponseDto> getWeatherByQuery(@Query("q") String place);
 

@@ -4,8 +4,8 @@ import com.rosshambrick.rainorshine.controllers.MainActivity;
 import com.rosshambrick.rainorshine.controllers.WeatherDetailFragment;
 import com.rosshambrick.rainorshine.controllers.WeatherFragment;
 import com.rosshambrick.rainorshine.core.domain.services.WeatherStore;
-import com.rosshambrick.rainorshine.core.networking.CitiesWebClient;
-import com.rosshambrick.rainorshine.core.networking.WeatherWebClient;
+import com.rosshambrick.rainorshine.core.networking.RemoteCitiesStore;
+import com.rosshambrick.rainorshine.core.networking.RemoteWeatherStore;
 import com.rosshambrick.rainorshine.core.networking.events.NetworkCallEndedEvent;
 import com.rosshambrick.rainorshine.core.networking.events.NetworkCallStartedEvent;
 import com.rosshambrick.rainorshine.core.networking.events.NetworkErrorOccurred;
@@ -31,7 +31,7 @@ public class RainOrShineModule {
 
     @Provides
     @Singleton
-    public WeatherWebClient provideWeatherWebClient() {
+    public RemoteWeatherStore provideWeatherWebClient() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://api.openweathermap.org/data/2.5")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
@@ -52,12 +52,12 @@ public class RainOrShineModule {
                     }
                 })
                 .build();
-        return restAdapter.create(WeatherWebClient.class);
+        return restAdapter.create(RemoteWeatherStore.class);
     }
 
     @Provides
     @Singleton
-    public CitiesWebClient provideCitiesWebClient() {
+    public RemoteCitiesStore provideCitiesWebClient() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://api.geonames.org/")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
@@ -78,12 +78,12 @@ public class RainOrShineModule {
                     }
                 })
                 .build();
-        return restAdapter.create(CitiesWebClient.class);
+        return restAdapter.create(RemoteCitiesStore.class);
     }
 
     @Provides
     @Singleton
-    public WeatherStore provideWeatherRepo(WeatherWebClient weatherWebClient, CitiesWebClient citiesWebClient) {
-        return new WeatherStore(weatherWebClient, citiesWebClient);
+    public WeatherStore provideWeatherStore(RemoteWeatherStore remoteWeatherStore, RemoteCitiesStore remoteCitiesStore) {
+        return new WeatherStore(remoteWeatherStore, remoteCitiesStore);
     }
 }
