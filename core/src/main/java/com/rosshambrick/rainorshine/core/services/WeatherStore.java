@@ -1,10 +1,10 @@
-package com.rosshambrick.rainorshine.core.domain.services;
+package com.rosshambrick.rainorshine.core.services;
 
-import com.rosshambrick.rainorshine.core.domain.entities.CityWeather;
-import com.rosshambrick.rainorshine.core.networking.RemoteCitiesStore;
-import com.rosshambrick.rainorshine.core.networking.RemoteWeatherStore;
-import com.rosshambrick.rainorshine.core.networking.entities.CitiesData;
-import com.rosshambrick.rainorshine.core.networking.entities.WeatherResponseDto;
+import com.rosshambrick.rainorshine.core.entities.CityWeather;
+import com.rosshambrick.rainorshine.networking.CitiesData;
+import com.rosshambrick.rainorshine.networking.RemoteCitiesStore;
+import com.rosshambrick.rainorshine.networking.RemoteWeatherStore;
+import com.rosshambrick.rainorshine.networking.WeatherResponseDto;
 
 import java.util.List;
 

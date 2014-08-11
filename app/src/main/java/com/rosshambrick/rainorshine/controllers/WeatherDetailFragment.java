@@ -10,8 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rosshambrick.rainorshine.R;
-import com.rosshambrick.rainorshine.core.domain.entities.CityWeather;
-import com.rosshambrick.rainorshine.core.domain.services.WeatherStore;
+import com.rosshambrick.rainorshine.core.entities.CityWeather;
+import com.rosshambrick.rainorshine.core.services.WeatherStore;
 import com.rosshambrick.rainorshine.networking.Urls;
 import com.squareup.picasso.Picasso;
 

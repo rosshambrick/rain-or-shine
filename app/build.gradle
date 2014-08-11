@@ -24,7 +24,6 @@ dependencies {
     compile project(':core')
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
     compile 'com.netflix.rxjava:rxjava-android:0.17.5'
-    compile 'de.greenrobot:eventbus:2.2.1'
     compile 'com.squareup.dagger:dagger:1.2.2'
     compile 'com.jakewharton:butterknife:5.1.2'
     compile 'com.squareup.picasso:picasso:2.3.3'

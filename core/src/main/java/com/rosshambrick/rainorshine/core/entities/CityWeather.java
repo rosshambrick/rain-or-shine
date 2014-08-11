@@ -1,4 +1,4 @@
-package com.rosshambrick.rainorshine.core.domain.entities;
+package com.rosshambrick.rainorshine.core.entities;
 
 public class CityWeather {
     private long mId;

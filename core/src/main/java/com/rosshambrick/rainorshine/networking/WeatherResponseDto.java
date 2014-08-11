@@ -1,6 +1,6 @@
-package com.rosshambrick.rainorshine.core.networking.entities;
+package com.rosshambrick.rainorshine.networking;
 
-import com.rosshambrick.rainorshine.core.domain.entities.CityWeather;
+import com.rosshambrick.rainorshine.core.entities.CityWeather;
 
 @SuppressWarnings("UnusedDeclaration")
 public class WeatherResponseDto {

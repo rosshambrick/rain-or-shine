@@ -3,22 +3,20 @@ package com.rosshambrick.rainorshine;
 import com.rosshambrick.rainorshine.controllers.MainActivity;
 import com.rosshambrick.rainorshine.controllers.WeatherDetailFragment;
 import com.rosshambrick.rainorshine.controllers.WeatherFragment;
-import com.rosshambrick.rainorshine.core.domain.services.WeatherStore;
-import com.rosshambrick.rainorshine.core.networking.RemoteCitiesStore;
-import com.rosshambrick.rainorshine.core.networking.RemoteWeatherStore;
-import com.rosshambrick.rainorshine.core.networking.events.NetworkCallEndedEvent;
-import com.rosshambrick.rainorshine.core.networking.events.NetworkCallStartedEvent;
-import com.rosshambrick.rainorshine.core.networking.events.NetworkErrorOccurred;
+import com.rosshambrick.rainorshine.core.services.WeatherStore;
+import com.rosshambrick.rainorshine.networking.NetworkActivity;
+import com.rosshambrick.rainorshine.networking.RemoteCitiesStore;
+import com.rosshambrick.rainorshine.networking.RemoteWeatherStore;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import de.greenrobot.event.EventBus;
 import retrofit.ErrorHandler;
 import retrofit.Profiler;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import rx.subjects.PublishSubject;
 
 @Module(
         injects = {
@@ -31,24 +29,30 @@ public class RainOrShineModule {
 
     @Provides
     @Singleton
-    public RemoteWeatherStore provideWeatherWebClient() {
+    public PublishSubject<NetworkActivity> provideNetworkObservable() {
+        return PublishSubject.create();
+    }
+
+    @Provides
+    @Singleton
+    public RemoteWeatherStore provideWeatherWebClient(final PublishSubject<NetworkActivity> networkSubject) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://api.openweathermap.org/data/2.5")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setErrorHandler(new ErrorHandler() {
                     public Throwable handleError(RetrofitError retrofitError) {
-                        EventBus.getDefault().post(new NetworkErrorOccurred(retrofitError));
+                        networkSubject.onError(retrofitError);
                         return retrofitError;
                     }
                 })
                 .setProfiler(new Profiler() {
                     public Object beforeCall() {
-                        EventBus.getDefault().post(new NetworkCallStartedEvent());
+                        networkSubject.onNext(NetworkActivity.STARTED);
                         return null;
                     }
 
                     public void afterCall(RequestInformation requestInformation, long l, int i, Object o) {
-                        EventBus.getDefault().post(new NetworkCallEndedEvent());
+                        networkSubject.onNext(NetworkActivity.ENDED);
                     }
                 })
                 .build();
@@ -57,24 +61,24 @@ public class RainOrShineModule {
 
     @Provides
     @Singleton
-    public RemoteCitiesStore provideCitiesWebClient() {
+    public RemoteCitiesStore provideCitiesWebClient(final PublishSubject<NetworkActivity> networkSubject) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://api.geonames.org/")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setErrorHandler(new ErrorHandler() {
                     public Throwable handleError(RetrofitError retrofitError) {
-                        EventBus.getDefault().post(new NetworkErrorOccurred(retrofitError));
+                        networkSubject.onError(retrofitError);
                         return retrofitError;
                     }
                 })
                 .setProfiler(new Profiler() {
                     public Object beforeCall() {
-                        EventBus.getDefault().post(new NetworkCallStartedEvent());
+                        networkSubject.onNext(NetworkActivity.STARTED);
                         return null;
                     }
 
                     public void afterCall(RequestInformation requestInformation, long l, int i, Object o) {
-                        EventBus.getDefault().post(new NetworkCallEndedEvent());
+                        networkSubject.onNext(NetworkActivity.ENDED);
                     }
                 })
                 .build();

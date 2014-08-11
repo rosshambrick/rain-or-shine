@@ -1,4 +1,4 @@
-package com.rosshambrick.rainorshine.core.networking.entities;
+package com.rosshambrick.rainorshine.networking;
 
 public class CitiesData {
     public City[] geonames;

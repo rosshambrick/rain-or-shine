@@ -2,29 +2,32 @@ package com.rosshambrick.rainorshine.controllers;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
-import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.google.common.eventbus.Subscribe;
+import com.rosshambrick.rainorshine.Injector;
 import com.rosshambrick.rainorshine.R;
-import com.rosshambrick.rainorshine.core.networking.events.NetworkCallEndedEvent;
-import com.rosshambrick.rainorshine.core.networking.events.NetworkCallStartedEvent;
-import com.rosshambrick.rainorshine.core.networking.events.NetworkErrorOccurred;
+import com.rosshambrick.rainorshine.networking.NetworkActivity;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import de.greenrobot.event.EventBus;
+import javax.inject.Inject;
 
-public class MainActivity extends Activity {
+import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
+import rx.subjects.PublishSubject;
+
+public class MainActivity extends Activity implements Observer<NetworkActivity> {
 
     private AtomicInteger mNetworkCount = new AtomicInteger(0);
+
+    @Inject PublishSubject<NetworkActivity> mNetworkActivitySubject;
+    private Subscription mSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +35,16 @@ public class MainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_main);
 
+        Injector.inject(this);
+
+        mSubscription = AndroidObservable.bindActivity(this, mNetworkActivitySubject)
+                .subscribe(this);
+
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .add(R.id.container, new WeatherFragment())
                     .commit();
         }
-
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -55,17 +61,19 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSubscription.unsubscribe();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
@@ -73,23 +81,28 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Subscribe
-    public void onEventMainThread(NetworkCallStartedEvent event) {
-        if (mNetworkCount.getAndIncrement() == 0) {
-            setProgressBarIndeterminateVisibility(true);
+    @Override
+    public void onCompleted() {}
+
+    @Override
+    public void onError(Throwable e) {
+        Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onNext(NetworkActivity networkEvent) {
+        switch (networkEvent) {
+            case STARTED:
+                if (mNetworkCount.getAndIncrement() == 0) {
+                    setProgressBarIndeterminateVisibility(true);
+                }
+                break;
+            case ENDED:
+                if (mNetworkCount.decrementAndGet() == 0) {
+                    setProgressBarIndeterminateVisibility(false);
+                }
+                break;
+
         }
     }
-
-    @Subscribe
-    public void onEventMainThread(NetworkCallEndedEvent event) {
-        if (mNetworkCount.decrementAndGet() == 0) {
-            setProgressBarIndeterminateVisibility(false);
-        }
-    }
-
-    @Subscribe
-    public void onEventMainThread(NetworkErrorOccurred event) {
-        Toast.makeText(this, "Error: " + event.getRetrofitError(), Toast.LENGTH_LONG).show();
-    }
-
 }

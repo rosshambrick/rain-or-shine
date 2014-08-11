@@ -1,7 +1,4 @@
-package com.rosshambrick.rainorshine.core.networking;
-
-import com.rosshambrick.rainorshine.core.domain.entities.CityWeather;
-import com.rosshambrick.rainorshine.core.networking.entities.WeatherResponseDto;
+package com.rosshambrick.rainorshine.networking;
 
 import retrofit.http.GET;
 import retrofit.http.Query;

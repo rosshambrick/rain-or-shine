@@ -21,8 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rosshambrick.rainorshine.R;
-import com.rosshambrick.rainorshine.core.domain.entities.CityWeather;
-import com.rosshambrick.rainorshine.core.domain.services.WeatherStore;
+import com.rosshambrick.rainorshine.core.entities.CityWeather;
+import com.rosshambrick.rainorshine.core.services.WeatherStore;
 import com.rosshambrick.rainorshine.networking.Urls;
 import com.squareup.picasso.Picasso;
 
@@ -163,7 +163,6 @@ public class WeatherFragment extends RainOrShineFragment
             Picasso.with(getActivity())
                     .load(String.format(Urls.WEATHER_ICON_FORMAT, cityWeather.getWeatherImageUrl()))
                     .into(viewHolder.cityWeatherImageView);
-
 
             return cityView;
         }

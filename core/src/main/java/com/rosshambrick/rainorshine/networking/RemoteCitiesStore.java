@@ -1,6 +1,4 @@
-package com.rosshambrick.rainorshine.core.networking;
-
-import com.rosshambrick.rainorshine.core.networking.entities.CitiesData;
+package com.rosshambrick.rainorshine.networking;
 
 import retrofit.http.GET;
 import rx.Observable;
