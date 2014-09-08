@@ -27,7 +27,7 @@ import com.rosshambrick.rainorshine.networking.Urls;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -70,13 +70,11 @@ public class WeatherFragment extends RainOrShineFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         mSubscriptions.add(AndroidObservable
-                .bindFragment(this, mWeatherStore.getTop(5))
-                .subscribe(new Action1<List<CityWeather>>() {
-                    public void call(List<CityWeather> cityWeathers) {
-                        mAdapter.addAll(cityWeathers);
-                    }
-                }));
+                .bindFragment(this, mWeatherStore.getCityWeathersCache())
+                .timeout(20, TimeUnit.SECONDS)
+                .subscribe(this));
     }
 
     @Override
@@ -99,7 +97,12 @@ public class WeatherFragment extends RainOrShineFragment
             String query = data.getStringExtra(SearchManager.QUERY);
             mSubscriptions.add(AndroidObservable
                     .bindFragment(this, mWeatherStore.getCityByName(query))
-                    .subscribe(this));
+                    .subscribe(new Action1<CityWeather>() {
+                        @Override
+                        public void call(CityWeather cityWeather) {
+                            mAdapter.add(cityWeather);
+                        }
+                    }));
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -114,19 +117,18 @@ public class WeatherFragment extends RainOrShineFragment
     }
 
     @Override
-    public void onNext(CityWeather weatherData) {
-        Log.d(TAG, "onNext");
-        mAdapter.add(weatherData);
-    }
-
-    @Override
     public void onCompleted() {
-        // do nothing
+        //nothing to do
     }
 
     @Override
     public void onError(Throwable e) {
-        Toast.makeText(getActivity(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onNext(CityWeather cityWeather) {
+        mAdapter.add(cityWeather);
     }
 
     private class WeatherDataAdapter extends ArrayAdapter<CityWeather> {
