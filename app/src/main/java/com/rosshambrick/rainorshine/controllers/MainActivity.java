@@ -87,6 +87,9 @@ public class MainActivity extends Activity implements Observer<NetworkActivity> 
     @Override
     public void onError(Throwable e) {
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        if (mNetworkCount.decrementAndGet() == 0) {
+            setProgressBarIndeterminateVisibility(false);
+        }
     }
 
     @Override
