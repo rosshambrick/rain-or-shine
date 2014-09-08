@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 20
     buildToolsVersion '20.0.0'
 
     defaultConfig {
         applicationId "com.rosshambrick.rainorshine"
         minSdkVersion 15
-        targetSdkVersion 19
+        targetSdkVersion 20
         versionCode 1
         versionName "1.0"
     }
@@ -17,13 +18,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 }
 
 dependencies {
+    compile 'com.android.support:support-v4:20.0.0'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:0.8.11'
+    compile 'com.netflix.rxjava:rxjava-kotlin:0.20.4'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':core')
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-    compile 'com.netflix.rxjava:rxjava-android:0.17.5'
+    compile 'com.netflix.rxjava:rxjava-android:0.20.2'
     compile 'com.squareup.dagger:dagger:1.2.2'
     compile 'com.jakewharton:butterknife:5.1.2'
     compile 'com.squareup.picasso:picasso:2.3.3'
