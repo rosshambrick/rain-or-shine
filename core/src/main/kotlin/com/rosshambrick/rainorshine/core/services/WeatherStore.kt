@@ -7,6 +7,8 @@ import com.rosshambrick.rainorshine.networking.RemoteWeatherStore
 import rx.Observable
 import rx.Subscriber
 import rx.lang.kotlin.asObservable
+import com.rosshambrick.rainorshine.networking.CitiesData
+import java.lang
 
 public class WeatherStore(private val mRemoteWeatherStore: RemoteWeatherStore, private val mRemoteCityStore: RemoteCitiesStore) {
 
@@ -14,49 +16,52 @@ public class WeatherStore(private val mRemoteWeatherStore: RemoteWeatherStore, p
         private val TAG = javaClass<WeatherStore>().getSimpleName()
     }
 
-    private val mCityWeathersCache: Observable<CityWeather>?
-    private val mCitiesCache: Observable<String>?
+    private val mCityWeathersCache: Observable<CityWeather>
+    private val mCitiesCache: Observable<String>
 
     {
-        mCitiesCache = getCities()!!.cache()
-        mCityWeathersCache = getCitiesWithWeather()!!.cache()
+        mCitiesCache = getCities().cache()!!
+        mCityWeathersCache = getCitiesWithWeather().cache()!!
     }
 
-    public fun getCityById(cityId: Long): Observable<CityWeather>? {
-        return mCityWeathersCache!!.filter { cityWeather -> cityWeather?.getId() == cityId }
+    public fun getCityById(cityId: Long): Observable<CityWeather> {
+        return mCityWeathersCache.filter { cityWeather -> cityWeather?.getId() == cityId }!!
     }
 
     public fun getTop(count: Int): Observable<CityWeather>? {
-        return mCityWeathersCache!!.take(count)
+        return mCityWeathersCache.take(count)
     }
 
-    public fun getCityByName(name: String): Observable<CityWeather>? {
+    public fun getCityByName(name: String): Observable<CityWeather> {
         return mRemoteWeatherStore.getWeatherByQuery(name)
-                ?.filter { responseDto -> responseDto?.id != 0L }
-                ?.map { weatherResponseDto -> weatherResponseDto?.toCityWeather() }
+                .filter { responseDto -> responseDto?.id != 0L }!!
+                .map { weatherResponseDto -> weatherResponseDto?.toCityWeather() }!!
     }
 
-    public fun getCityWeathersCache(): Observable<CityWeather>? {
+    public fun getCityWeathersCache(): Observable<CityWeather> {
         return mCityWeathersCache
     }
 
-    private fun getCitiesWithWeather(): Observable<CityWeather>? {
+    private fun getCitiesWithWeather(): Observable<CityWeather> {
         return mCitiesCache
-                ?.flatMap { cityAndCountryCode -> mRemoteWeatherStore.getWeatherByQuery(cityAndCountryCode) }
-                ?.filter { weatherResponseDto -> weatherResponseDto?.id != 0L }
-                ?.map { weatherResponseDto -> weatherResponseDto?.toCityWeather() }
+                .flatMap { cityAndCountryCode -> mRemoteWeatherStore.getWeatherByQuery(cityAndCountryCode!!) }!!
+                .filter { weatherResponseDto -> weatherResponseDto?.id != 0L }!!
+                .map { weatherResponseDto -> weatherResponseDto?.toCityWeather() }!!
     }
 
-    private fun getCities(): Observable<String>? {
+    private fun getCities(): Observable<String> {
         return mRemoteCityStore.getCities()
-                ?.flatMap { citiesData ->
-                    {(subscriber: Subscriber<in String>) ->
-                        citiesData?.geonames?.forEach { geoname ->
-                            val cityAndCountryCode = java.lang.String.format("%s,%s", geoname.name, geoname.countrycode)
-                            subscriber.onNext(cityAndCountryCode)
-                        }
-                        subscriber.onCompleted()
-                    }.asObservable()
-                }
+                .flatMap { citiesData -> cityDataToSearchNames(citiesData!!).asObservable() }!!
     }
+
+    fun cityDataToSearchNames(citiesData: CitiesData): (Subscriber<in String>) -> Unit {
+        return {(subscriber: Subscriber<in String>) ->
+            citiesData.geonames?.forEach { geoname ->
+                val cityAndCountryCode = lang.String.format("%s,%s", geoname.name, geoname.countrycode)
+                subscriber.onNext(cityAndCountryCode)
+            }
+            subscriber.onCompleted()
+        }
+    }
+
 }
