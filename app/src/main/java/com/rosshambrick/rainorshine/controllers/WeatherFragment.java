@@ -21,8 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rosshambrick.rainorshine.R;
-import com.rosshambrick.rainorshine.core.entities.CityWeather;
-import com.rosshambrick.rainorshine.core.services.WeatherStore;
+import com.rosshambrick.rainorshine.core.entities.WeatherReport;
+import com.rosshambrick.rainorshine.core.managers.WeatherManager;
 import com.rosshambrick.rainorshine.networking.Urls;
 import com.squareup.picasso.Picasso;
 
@@ -37,12 +37,12 @@ import rx.Observer;
 import rx.android.observables.AndroidObservable;
 
 public class WeatherFragment extends RainOrShineFragment
-        implements AdapterView.OnItemClickListener, Observer<CityWeather> {
+        implements AdapterView.OnItemClickListener, Observer<WeatherReport> {
 
     private static final String TAG = WeatherFragment.class.getSimpleName();
     public static final int REQUEST_SEARCH = 0;
 
-    @Inject WeatherStore mWeatherStore;
+    @Inject WeatherManager mWeatherManager;
 
     @InjectView(R.id.fragment_main_list) ListView mListView;
     private WeatherDataAdapter mAdapter;
@@ -71,7 +71,7 @@ public class WeatherFragment extends RainOrShineFragment
         super.onActivityCreated(savedInstanceState);
 
         mSubscriptions.add(AndroidObservable
-                .bindFragment(this, mWeatherStore.getCitiesWithWeather())
+                .bindFragment(this, mWeatherManager.getCitiesWithWeather())
                 .timeout(20, TimeUnit.SECONDS)
                 .subscribe(this));
     }
@@ -95,7 +95,7 @@ public class WeatherFragment extends RainOrShineFragment
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_SEARCH) {
             String query = data.getStringExtra(SearchManager.QUERY);
             mSubscriptions.add(AndroidObservable
-                    .bindFragment(this, mWeatherStore.getCityByName(query))
+                    .bindFragment(this, mWeatherManager.getCityByName(query))
                     .subscribe(mAdapter::add));
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -121,11 +121,11 @@ public class WeatherFragment extends RainOrShineFragment
     }
 
     @Override
-    public void onNext(CityWeather cityWeather) {
-        mAdapter.add(cityWeather);
+    public void onNext(WeatherReport weatherReport) {
+        mAdapter.add(weatherReport);
     }
 
-    private class WeatherDataAdapter extends ArrayAdapter<CityWeather> {
+    private class WeatherDataAdapter extends ArrayAdapter<WeatherReport> {
         public WeatherDataAdapter(Context context) {
             super(context, 0, new ArrayList<>());
         }
@@ -152,12 +152,12 @@ public class WeatherFragment extends RainOrShineFragment
                 viewHolder = (ViewHolder) cityView.getTag();
             }
 
-            CityWeather cityWeather = getItem(position);
+            WeatherReport weatherReport = getItem(position);
 
-            viewHolder.cityNameView.setText(String.format("%s", cityWeather.getName()));
-            viewHolder.cityTempView.setText(cityWeather.getFormattedCurrentTempInFahrenheit());
+            viewHolder.cityNameView.setText(String.format("%s", weatherReport.getName()));
+            viewHolder.cityTempView.setText(weatherReport.getFormattedCurrentTempInFahrenheit());
             Picasso.with(getActivity())
-                    .load(String.format(Urls.WEATHER_ICON_FORMAT, cityWeather.getWeatherImageUrl()))
+                    .load(String.format(Urls.WEATHER_ICON_FORMAT, weatherReport.getWeatherImageUrl()))
                     .into(viewHolder.cityWeatherImageView);
 
             return cityView;

@@ -3,17 +3,16 @@ package com.rosshambrick.rainorshine;
 import com.rosshambrick.rainorshine.controllers.MainActivity;
 import com.rosshambrick.rainorshine.controllers.WeatherDetailFragment;
 import com.rosshambrick.rainorshine.controllers.WeatherFragment;
-import com.rosshambrick.rainorshine.core.services.WeatherStore;
+import com.rosshambrick.rainorshine.core.managers.CoordinatedWeatherManager;
+import com.rosshambrick.rainorshine.core.managers.WeatherManager;
+import com.rosshambrick.rainorshine.networking.GeoNamesClient;
 import com.rosshambrick.rainorshine.networking.NetworkActivity;
-import com.rosshambrick.rainorshine.networking.RemoteCitiesStore;
-import com.rosshambrick.rainorshine.networking.RemoteWeatherStore;
+import com.rosshambrick.rainorshine.networking.OpenWeatherMapClient;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit.Profiler;
-import retrofit.RestAdapter;
 import rx.subjects.PublishSubject;
 
 @Module(
@@ -33,55 +32,19 @@ public class RainOrShineModule {
 
     @Provides
     @Singleton
-    public RemoteWeatherStore provideWeatherWebClient(final PublishSubject<NetworkActivity> networkSubject) {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("http://api.openweathermap.org/data/2.5")
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setErrorHandler(retrofitError -> {
-                    networkSubject.onError(retrofitError);
-                    return retrofitError;
-                })
-                .setProfiler(new Profiler() {
-                    public Object beforeCall() {
-                        networkSubject.onNext(NetworkActivity.STARTED);
-                        return null;
-                    }
-
-                    public void afterCall(RequestInformation requestInformation, long l, int i, Object o) {
-                        networkSubject.onNext(NetworkActivity.ENDED);
-                    }
-                })
-                .build();
-        return restAdapter.create(RemoteWeatherStore.class);
+    public OpenWeatherMapClient provideOpenWeatherMapClient(final PublishSubject<NetworkActivity> networkSubject) {
+        return OpenWeatherMapClient.Factory.create(networkSubject);
     }
 
     @Provides
     @Singleton
-    public RemoteCitiesStore provideCitiesWebClient(final PublishSubject<NetworkActivity> networkSubject) {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("http://api.geonames.org/")
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setErrorHandler(retrofitError -> {
-                    networkSubject.onError(retrofitError);
-                    return retrofitError;
-                })
-                .setProfiler(new Profiler() {
-                    public Object beforeCall() {
-                        networkSubject.onNext(NetworkActivity.STARTED);
-                        return null;
-                    }
-
-                    public void afterCall(RequestInformation requestInformation, long l, int i, Object o) {
-                        networkSubject.onNext(NetworkActivity.ENDED);
-                    }
-                })
-                .build();
-        return restAdapter.create(RemoteCitiesStore.class);
+    public GeoNamesClient provideGeoNamesClient(final PublishSubject<NetworkActivity> networkSubject) {
+        return GeoNamesClient.Factory.create(networkSubject);
     }
 
     @Provides
     @Singleton
-    public WeatherStore provideWeatherStore(RemoteWeatherStore remoteWeatherStore, RemoteCitiesStore remoteCitiesStore) {
-        return new WeatherStore(remoteWeatherStore, remoteCitiesStore);
+    public WeatherManager provideWeatherManager(OpenWeatherMapClient openWeatherMapClient, GeoNamesClient geoNamesClient) {
+        return new CoordinatedWeatherManager(openWeatherMapClient, geoNamesClient);
     }
 }

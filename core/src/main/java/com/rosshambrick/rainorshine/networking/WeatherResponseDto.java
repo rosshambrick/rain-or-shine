@@ -1,6 +1,6 @@
 package com.rosshambrick.rainorshine.networking;
 
-import com.rosshambrick.rainorshine.core.entities.CityWeather;
+import com.rosshambrick.rainorshine.core.entities.WeatherReport;
 
 @SuppressWarnings("UnusedDeclaration")
 public class WeatherResponseDto {
@@ -64,17 +64,17 @@ public class WeatherResponseDto {
         return name;
     }
 
-    public CityWeather toCityWeather() {
-        CityWeather cityWeather = new CityWeather();
-        cityWeather.setId(id);
-        cityWeather.setName(name);
-        cityWeather.setCurrentTempInKelvin(main.temp);
-        cityWeather.setHighTempInKelvin(main.temp_max);
-        cityWeather.setLowTempInKelvin(main.temp_min);
+    public WeatherReport toCityWeather() {
+        WeatherReport weatherReport = new WeatherReport();
+        weatherReport.setId(id);
+        weatherReport.setName(name);
+        weatherReport.setCurrentTempInKelvin(main.temp);
+        weatherReport.setHighTempInKelvin(main.temp_max);
+        weatherReport.setLowTempInKelvin(main.temp_min);
         if (weather != null && weather[0] != null) {
-            cityWeather.setWeatherConditions(weather[0].description);
-            cityWeather.setWeatherImageName(weather[0].icon);
+            weatherReport.setWeatherConditions(weather[0].description);
+            weatherReport.setWeatherImageName(weather[0].icon);
         }
-        return cityWeather;
+        return weatherReport;
     }
 }

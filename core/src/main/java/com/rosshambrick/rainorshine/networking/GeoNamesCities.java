@@ -1,6 +1,6 @@
 package com.rosshambrick.rainorshine.networking;
 
-public class CitiesData {
+public class GeoNamesCities {
     public City[] geonames;
 
     public static class City {

@@ -1,6 +1,6 @@
 package com.rosshambrick.rainorshine.core.entities;
 
-public class CityWeather {
+public class WeatherReport {
     private long mId;
     private String mName;
     private double mCurrentTempInKelvin;

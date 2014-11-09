@@ -10,8 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rosshambrick.rainorshine.R;
-import com.rosshambrick.rainorshine.core.entities.CityWeather;
-import com.rosshambrick.rainorshine.core.services.WeatherStore;
+import com.rosshambrick.rainorshine.core.entities.WeatherReport;
+import com.rosshambrick.rainorshine.core.managers.WeatherManager;
 import com.rosshambrick.rainorshine.networking.Urls;
 import com.squareup.picasso.Picasso;
 
@@ -22,11 +22,11 @@ import butterknife.InjectView;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 
-public class WeatherDetailFragment extends RainOrShineFragment implements Observer<CityWeather> {
+public class WeatherDetailFragment extends RainOrShineFragment implements Observer<WeatherReport> {
 
     private static final String CITY_ID = "city_id";
 
-    @Inject WeatherStore mWeatherStore;
+    @Inject WeatherManager mWeatherManager;
 
     @InjectView(R.id.fragment_weather_detail_current_temperature) TextView mCurrentTemperature;
     @InjectView(R.id.fragment_weather_detail_high_temperature) TextView mHighTemperature;
@@ -61,13 +61,13 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
         long mCityId = getArguments().getLong(CITY_ID);
 
         mSubscriptions.add(AndroidObservable
-                .bindFragment(this, mWeatherStore.getCityById(mCityId))
+                .bindFragment(this, mWeatherManager.getCityById(mCityId))
                 .subscribe(this));
     }
 
     @Override
-    public void onNext(CityWeather cityWeather) {
-        display(cityWeather);
+    public void onNext(WeatherReport weatherReport) {
+        display(weatherReport);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
         Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
     }
 
-    private void display(CityWeather weatherData) {
+    private void display(WeatherReport weatherData) {
         getActivity().setTitle(weatherData.getName());
         mCurrentTemperature.setText(weatherData.getFormattedCurrentTempInFahrenheit());
         mHighTemperature.setText(weatherData.getFormattedHighTempInFahrenheit());

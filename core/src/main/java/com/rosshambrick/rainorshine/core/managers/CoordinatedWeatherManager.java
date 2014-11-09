@@ -1,9 +1,9 @@
-package com.rosshambrick.rainorshine.core.services;
+package com.rosshambrick.rainorshine.core.managers;
 
-import com.rosshambrick.rainorshine.core.entities.CityWeather;
-import com.rosshambrick.rainorshine.networking.CitiesData;
-import com.rosshambrick.rainorshine.networking.RemoteCitiesStore;
-import com.rosshambrick.rainorshine.networking.RemoteWeatherStore;
+import com.rosshambrick.rainorshine.core.entities.WeatherReport;
+import com.rosshambrick.rainorshine.networking.GeoNamesCities;
+import com.rosshambrick.rainorshine.networking.GeoNamesClient;
+import com.rosshambrick.rainorshine.networking.OpenWeatherMapClient;
 import com.rosshambrick.rainorshine.networking.WeatherResponseDto;
 
 import javax.inject.Inject;
@@ -13,38 +13,41 @@ import rx.Observable;
 import rx.Subscriber;
 
 @Singleton
-public class WeatherStore {
+public class CoordinatedWeatherManager implements WeatherManager {
 
-    private static final String TAG = WeatherStore.class.getSimpleName();
+    private static final String TAG = CoordinatedWeatherManager.class.getSimpleName();
 
-    private RemoteWeatherStore mRemoteWeatherStore;
-    private RemoteCitiesStore mRemoteCityStore;
-    private Observable<CityWeather> mCityWeathersCache;
+    private OpenWeatherMapClient mOpenWeatherMapClient;
+    private GeoNamesClient mRemoteCityStore;
+    private Observable<WeatherReport> mCityWeathersCache;
     private Observable<String> mCitiesCache;
 
     @Inject
-    public WeatherStore(RemoteWeatherStore remoteWeatherStore, RemoteCitiesStore remoteCityStore) {
-        mRemoteWeatherStore = remoteWeatherStore;
+    public CoordinatedWeatherManager(OpenWeatherMapClient openWeatherMapClient, GeoNamesClient remoteCityStore) {
+        mOpenWeatherMapClient = openWeatherMapClient;
         mRemoteCityStore = remoteCityStore;
         mCitiesCache = getCities().cache();
         mCityWeathersCache = getCitiesWithWeather().cache();
     }
 
-    public Observable<CityWeather> getCityById(final long cityId) {
+    @Override
+    public Observable<WeatherReport> getCityById(final long cityId) {
         return mCityWeathersCache
                 .flatMap(Observable::from)
                 .filter(cityWeather -> cityWeather.getId() == cityId);
     }
 
-    public Observable<CityWeather> getCityByName(String name) {
-        return mRemoteWeatherStore.getWeatherByQuery(name)
+    @Override
+    public Observable<WeatherReport> getCityByName(String name) {
+        return mOpenWeatherMapClient.getWeatherByQuery(name)
                 .filter(weatherResponseDto -> weatherResponseDto.id != 0)
                 .map(WeatherResponseDto::toCityWeather);
     }
 
-    public Observable<CityWeather> getCitiesWithWeather() {
+    @Override
+    public Observable<WeatherReport> getCitiesWithWeather() {
         return mCitiesCache
-                .flatMap(mRemoteWeatherStore::getWeatherByQuery)
+                .flatMap(mOpenWeatherMapClient::getWeatherByQuery)
                 .filter(weatherResponseDto -> weatherResponseDto.id != 0)
                 .map(WeatherResponseDto::toCityWeather);
     }
@@ -53,7 +56,7 @@ public class WeatherStore {
         return mRemoteCityStore.getCities()
                 .flatMap(citiesData ->
                         Observable.create((Subscriber<? super String> subscriber) -> {
-                            for (CitiesData.City geoname : citiesData.geonames) {
+                            for (GeoNamesCities.City geoname : citiesData.geonames) {
                                 String cityAndCountryCode = String.format("%s,%s", geoname.name, geoname.countrycode);
                                 subscriber.onNext(cityAndCountryCode);
                             }
@@ -61,7 +64,8 @@ public class WeatherStore {
                         }));
     }
 
-    public Observable<CityWeather> getTop(int count) {
+    @Override
+    public Observable<WeatherReport> getTop(int count) {
         return mCityWeathersCache.take(count);
     }
 }
