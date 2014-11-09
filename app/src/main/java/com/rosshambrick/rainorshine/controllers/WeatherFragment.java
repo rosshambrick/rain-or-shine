@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.rosshambrick.rainorshine.R;
 import com.rosshambrick.rainorshine.core.entities.WeatherReport;
 import com.rosshambrick.rainorshine.core.managers.WeatherManager;
-import com.rosshambrick.rainorshine.networking.Urls;
+import com.rosshambrick.rainorshine.networking.openweathermap.OpenWeatherMapClient;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public class WeatherFragment extends RainOrShineFragment
         super.onActivityCreated(savedInstanceState);
 
         mSubscriptions.add(AndroidObservable
-                .bindFragment(this, mWeatherManager.getCitiesWithWeather())
+                .bindFragment(this, mWeatherManager.getAll())
                 .timeout(20, TimeUnit.SECONDS)
                 .subscribe(this));
     }
@@ -95,7 +95,7 @@ public class WeatherFragment extends RainOrShineFragment
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_SEARCH) {
             String query = data.getStringExtra(SearchManager.QUERY);
             mSubscriptions.add(AndroidObservable
-                    .bindFragment(this, mWeatherManager.getCityByName(query))
+                    .bindFragment(this, mWeatherManager.getByCityName(query))
                     .subscribe(mAdapter::add));
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -157,7 +157,7 @@ public class WeatherFragment extends RainOrShineFragment
             viewHolder.cityNameView.setText(String.format("%s", weatherReport.getName()));
             viewHolder.cityTempView.setText(weatherReport.getFormattedCurrentTempInFahrenheit());
             Picasso.with(getActivity())
-                    .load(String.format(Urls.WEATHER_ICON_FORMAT, weatherReport.getWeatherImageUrl()))
+                    .load(String.format(OpenWeatherMapClient.WEATHER_ICON_FORMAT, weatherReport.getWeatherImageUrl()))
                     .into(viewHolder.cityWeatherImageView);
 
             return cityView;

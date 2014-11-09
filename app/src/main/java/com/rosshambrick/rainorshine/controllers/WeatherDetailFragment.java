@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.rosshambrick.rainorshine.R;
 import com.rosshambrick.rainorshine.core.entities.WeatherReport;
 import com.rosshambrick.rainorshine.core.managers.WeatherManager;
-import com.rosshambrick.rainorshine.networking.Urls;
+import com.rosshambrick.rainorshine.networking.openweathermap.OpenWeatherMapClient;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -61,7 +61,7 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
         long mCityId = getArguments().getLong(CITY_ID);
 
         mSubscriptions.add(AndroidObservable
-                .bindFragment(this, mWeatherManager.getCityById(mCityId))
+                .bindFragment(this, mWeatherManager.getByCityId(mCityId))
                 .subscribe(this));
     }
 
@@ -87,7 +87,7 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
         mLowTemperature.setText(weatherData.getFormattedLowTempInFahrenheit());
         mWeatherConditions.setText(weatherData.getWeatherConditions());
         Picasso.with(getActivity())
-                .load(String.format(Urls.WEATHER_ICON_FORMAT, weatherData.getWeatherImageUrl()))
+                .load(String.format(OpenWeatherMapClient.WEATHER_ICON_FORMAT, weatherData.getWeatherImageUrl()))
                 .into(mWeatherImage);
     }
 }

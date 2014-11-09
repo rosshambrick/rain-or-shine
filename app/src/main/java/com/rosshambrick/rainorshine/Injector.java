@@ -1,7 +1,5 @@
 package com.rosshambrick.rainorshine;
 
-import com.rosshambrick.rainorshine.controllers.WeatherFragment;
-
 import dagger.ObjectGraph;
 
 public class Injector {

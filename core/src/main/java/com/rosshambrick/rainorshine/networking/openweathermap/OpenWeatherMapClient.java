@@ -1,16 +1,21 @@
-package com.rosshambrick.rainorshine.networking;
+package com.rosshambrick.rainorshine.networking.openweathermap;
+
+import com.rosshambrick.rainorshine.networking.NetworkActivity;
 
 import retrofit.Profiler;
 import retrofit.RestAdapter;
 import retrofit.http.GET;
+import retrofit.http.Query;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public interface GeoNamesClient {
+public interface OpenWeatherMapClient {
+    public static final String WEATHER_ICON_FORMAT = "http://openweathermap.org/img/w/%s.png";
+
     public class Factory {
-        public static GeoNamesClient create(PublishSubject<NetworkActivity> networkSubject) {
+        public static OpenWeatherMapClient create(PublishSubject<NetworkActivity> networkSubject) {
             return new RestAdapter.Builder()
-                    .setEndpoint("http://api.geonames.org/")
+                    .setEndpoint("http://api.openweathermap.org/data/2.5")
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setErrorHandler(retrofitError -> {
                         networkSubject.onError(retrofitError);
@@ -27,10 +32,13 @@ public interface GeoNamesClient {
                         }
                     })
                     .build()
-                    .create(GeoNamesClient.class);
+                    .create(OpenWeatherMapClient.class);
         }
     }
 
-    @GET("/citiesJSON?formatted=true&north=44.1&south=-9.9&east=-22.4&west=55.2&username=rainorshine&style=full&maxRows=30")
-    Observable<GeoNamesCities> getCities();
+    @GET("/weather")
+    Observable<WeatherResponseDto> getWeatherByQuery(@Query("q") String place);
+
+    @GET("/weather")
+    Observable<WeatherResponseDto> getWeatherById(@Query("id") long id);
 }
