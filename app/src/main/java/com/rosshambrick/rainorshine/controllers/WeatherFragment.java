@@ -35,7 +35,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
-import rx.functions.Action1;
 
 public class WeatherFragment extends RainOrShineFragment
         implements AdapterView.OnItemClickListener, Observer<CityWeather> {
@@ -72,7 +71,7 @@ public class WeatherFragment extends RainOrShineFragment
         super.onActivityCreated(savedInstanceState);
 
         mSubscriptions.add(AndroidObservable
-                .bindFragment(this, mWeatherStore.getCityWeathersCache())
+                .bindFragment(this, mWeatherStore.getCitiesWithWeather())
                 .timeout(20, TimeUnit.SECONDS)
                 .subscribe(this));
     }
@@ -97,12 +96,7 @@ public class WeatherFragment extends RainOrShineFragment
             String query = data.getStringExtra(SearchManager.QUERY);
             mSubscriptions.add(AndroidObservable
                     .bindFragment(this, mWeatherStore.getCityByName(query))
-                    .subscribe(new Action1<CityWeather>() {
-                        @Override
-                        public void call(CityWeather cityWeather) {
-                            mAdapter.add(cityWeather);
-                        }
-                    }));
+                    .subscribe(mAdapter::add));
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -133,7 +127,7 @@ public class WeatherFragment extends RainOrShineFragment
 
     private class WeatherDataAdapter extends ArrayAdapter<CityWeather> {
         public WeatherDataAdapter(Context context) {
-            super(context, 0, new ArrayList<CityWeather>());
+            super(context, 0, new ArrayList<>());
         }
 
         @Override

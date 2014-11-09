@@ -12,10 +12,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit.ErrorHandler;
 import retrofit.Profiler;
 import retrofit.RestAdapter;
-import retrofit.RetrofitError;
 import rx.subjects.PublishSubject;
 
 @Module(
@@ -39,11 +37,9 @@ public class RainOrShineModule {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://api.openweathermap.org/data/2.5")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setErrorHandler(new ErrorHandler() {
-                    public Throwable handleError(RetrofitError retrofitError) {
-                        networkSubject.onError(retrofitError);
-                        return retrofitError;
-                    }
+                .setErrorHandler(retrofitError -> {
+                    networkSubject.onError(retrofitError);
+                    return retrofitError;
                 })
                 .setProfiler(new Profiler() {
                     public Object beforeCall() {
@@ -65,11 +61,9 @@ public class RainOrShineModule {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://api.geonames.org/")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setErrorHandler(new ErrorHandler() {
-                    public Throwable handleError(RetrofitError retrofitError) {
-                        networkSubject.onError(retrofitError);
-                        return retrofitError;
-                    }
+                .setErrorHandler(retrofitError -> {
+                    networkSubject.onError(retrofitError);
+                    return retrofitError;
                 })
                 .setProfiler(new Profiler() {
                     public Object beforeCall() {
