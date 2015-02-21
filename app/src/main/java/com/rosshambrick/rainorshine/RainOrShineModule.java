@@ -5,9 +5,9 @@ import com.rosshambrick.rainorshine.app.WeatherDetailFragment;
 import com.rosshambrick.rainorshine.app.WeatherListFragment;
 import com.rosshambrick.rainorshine.core.managers.CoordinatedWeatherManager;
 import com.rosshambrick.rainorshine.core.managers.WeatherManager;
-import com.rosshambrick.rainorshine.networking.NetworkActivity;
-import com.rosshambrick.rainorshine.networking.geonames.GeoNamesClient;
-import com.rosshambrick.rainorshine.networking.openweathermap.OpenWeatherMapClient;
+import com.rosshambrick.rainorshine.webservices.NetworkActivity;
+import com.rosshambrick.rainorshine.webservices.geonames.GeoNamesClient;
+import com.rosshambrick.rainorshine.webservices.openweathermap.OpenWeatherMapClient;
 
 import javax.inject.Singleton;
 

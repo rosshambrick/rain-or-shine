@@ -1,4 +1,4 @@
-package com.rosshambrick.rainorshine.networking.geonames;
+package com.rosshambrick.rainorshine.webservices.geonames;
 
 public class GeoNamesCities {
     public City[] geonames;

@@ -1,4 +1,4 @@
-package com.rosshambrick.rainorshine.networking.openweathermap;
+package com.rosshambrick.rainorshine.webservices.openweathermap;
 
 import com.rosshambrick.rainorshine.core.entities.WeatherReport;
 

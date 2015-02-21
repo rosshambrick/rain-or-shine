@@ -3,9 +3,9 @@ package com.rosshambrick.rainorshine.core.managers;
 import android.support.v4.util.SparseArrayCompat;
 
 import com.rosshambrick.rainorshine.core.entities.WeatherReport;
-import com.rosshambrick.rainorshine.networking.geonames.GeoNamesClient;
-import com.rosshambrick.rainorshine.networking.openweathermap.OpenWeatherMapClient;
-import com.rosshambrick.rainorshine.networking.openweathermap.WeatherResponse;
+import com.rosshambrick.rainorshine.webservices.geonames.GeoNamesClient;
+import com.rosshambrick.rainorshine.webservices.openweathermap.OpenWeatherMapClient;
+import com.rosshambrick.rainorshine.webservices.openweathermap.WeatherResponse;
 
 import java.util.List;
 

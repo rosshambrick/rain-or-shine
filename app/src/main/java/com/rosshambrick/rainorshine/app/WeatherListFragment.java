@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.rosshambrick.rainorshine.R;
 import com.rosshambrick.rainorshine.core.entities.WeatherReport;
 import com.rosshambrick.rainorshine.core.managers.WeatherManager;
-import com.rosshambrick.rainorshine.networking.openweathermap.OpenWeatherMapClient;
+import com.rosshambrick.rainorshine.webservices.openweathermap.OpenWeatherMapClient;
 import com.rosshambrick.standardlib.SingleFragmentActivity;
 import com.squareup.picasso.Picasso;
 

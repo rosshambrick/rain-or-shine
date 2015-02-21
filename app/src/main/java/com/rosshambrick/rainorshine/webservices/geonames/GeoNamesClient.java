@@ -1,6 +1,6 @@
-package com.rosshambrick.rainorshine.networking.geonames;
+package com.rosshambrick.rainorshine.webservices.geonames;
 
-import com.rosshambrick.rainorshine.networking.NetworkActivity;
+import com.rosshambrick.rainorshine.webservices.NetworkActivity;
 
 import retrofit.Profiler;
 import retrofit.RestAdapter;

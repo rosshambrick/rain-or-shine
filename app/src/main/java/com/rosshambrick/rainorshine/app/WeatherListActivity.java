@@ -7,7 +7,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.rosshambrick.rainorshine.Injector;
-import com.rosshambrick.rainorshine.networking.NetworkActivity;
+import com.rosshambrick.rainorshine.webservices.NetworkActivity;
 import com.rosshambrick.standardlib.SingleFragmentActivity;
 
 import java.util.concurrent.atomic.AtomicInteger;

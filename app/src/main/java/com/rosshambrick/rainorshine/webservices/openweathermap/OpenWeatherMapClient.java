@@ -1,6 +1,6 @@
-package com.rosshambrick.rainorshine.networking.openweathermap;
+package com.rosshambrick.rainorshine.webservices.openweathermap;
 
-import com.rosshambrick.rainorshine.networking.NetworkActivity;
+import com.rosshambrick.rainorshine.webservices.NetworkActivity;
 
 import retrofit.Profiler;
 import retrofit.RestAdapter;
