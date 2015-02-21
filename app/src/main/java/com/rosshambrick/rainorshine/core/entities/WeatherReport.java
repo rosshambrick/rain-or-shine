@@ -1,52 +1,52 @@
 package com.rosshambrick.rainorshine.core.entities;
 
 public class WeatherReport {
-    private long mId;
-    private String mName;
-    private double mCurrentTempInKelvin;
-    private double mHighTempInKelvin;
-    private double mLowTempInKelvin;
-    private String mWeatherImageUrl;
-    private String mWeatherConditions;
+    private long id;
+    private String name;
+    private double currentTempInKelvin;
+    private double highTempInKelvin;
+    private double lowTempInKelvin;
+    private String weatherImageUrl;
+    private String weatherConditions;
 
     public long getId() {
-        return mId;
+        return id;
     }
 
     public void setId(long id) {
-        mId = id;
+        this.id = id;
     }
 
     public void setName(String name) {
-        mName = name;
+        this.name = name;
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
     public void setCurrentTempInKelvin(double currentTempInKelvin) {
-        mCurrentTempInKelvin = currentTempInKelvin;
+        this.currentTempInKelvin = currentTempInKelvin;
     }
 
     public void setHighTempInKelvin(double highTempInKelvin) {
-        mHighTempInKelvin = highTempInKelvin;
+        this.highTempInKelvin = highTempInKelvin;
     }
 
     public void setLowTempInKelvin(double lowTempInKelvin) {
-        mLowTempInKelvin = lowTempInKelvin;
+        this.lowTempInKelvin = lowTempInKelvin;
     }
 
     public double getCurrentTempInFahrenheit() {
-        return toFahrenheit(mCurrentTempInKelvin);
+        return toFahrenheit(currentTempInKelvin);
     }
 
     public double getHighTempInFahrenheit() {
-        return toFahrenheit(mHighTempInKelvin);
+        return toFahrenheit(highTempInKelvin);
     }
 
     private double getLowTempInFahrenheit() {
-        return toFahrenheit(mLowTempInKelvin);
+        return toFahrenheit(lowTempInKelvin);
     }
 
     public String getFormattedCurrentTempInFahrenheit() {
@@ -70,18 +70,18 @@ public class WeatherReport {
     }
 
     public String getWeatherImageUrl() {
-        return mWeatherImageUrl;
+        return weatherImageUrl;
     }
 
     public void setWeatherImageName(String weatherImageUrl) {
-        mWeatherImageUrl = weatherImageUrl;
+        this.weatherImageUrl = weatherImageUrl;
     }
 
     public void setWeatherConditions(String weatherConditions) {
-        mWeatherConditions = weatherConditions;
+        this.weatherConditions = weatherConditions;
     }
 
     public String getWeatherConditions() {
-        return mWeatherConditions;
+        return weatherConditions;
     }
 }

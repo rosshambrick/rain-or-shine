@@ -1,13 +1,12 @@
-package com.rosshambrick.rainorshine.controllers;
+package com.rosshambrick.rainorshine.app;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rosshambrick.rainorshine.R;
 import com.rosshambrick.rainorshine.core.entities.WeatherReport;
@@ -17,27 +16,27 @@ import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
 
 public class WeatherDetailFragment extends RainOrShineFragment implements Observer<WeatherReport> {
 
-    private static final String CITY_ID = "city_id";
+    public static final String ARGS_WEATHER_ID = "ARGS_WEATHER_ID";
 
-    @Inject WeatherManager mWeatherManager;
+    @Inject WeatherManager weatherManager;
 
-    @InjectView(R.id.fragment_weather_detail_current_temperature) TextView mCurrentTemperature;
-    @InjectView(R.id.fragment_weather_detail_high_temperature) TextView mHighTemperature;
-    @InjectView(R.id.fragment_weather_detail_low_temperature) TextView mLowTemperature;
-    @InjectView(R.id.fragment_weather_detail_weather_image) ImageView mWeatherImage;
-    @InjectView(R.id.fragment_weather_detail_conditions) TextView mWeatherConditions;
+    @InjectView(R.id.weather_detail_current_temperature) TextView mCurrentTemperature;
+    @InjectView(R.id.weather_detail_high_temperature) TextView mHighTemperature;
+    @InjectView(R.id.weather_detail_low_temperature) TextView mLowTemperature;
+    @InjectView(R.id.weather_detail_weather_image) ImageView mWeatherImage;
+    @InjectView(R.id.weather_detail_conditions) TextView mWeatherConditions;
 
-    public static Fragment newInstance(long id) {
+    private int cityId;
+
+    public static Fragment newInstance(int id) {
         Fragment fragment = new WeatherDetailFragment();
         Bundle args = new Bundle();
-        args.putLong(CITY_ID, id);
+        args.putInt(ARGS_WEATHER_ID, id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,39 +44,23 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        cityId = getArguments().getInt(ARGS_WEATHER_ID);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_weather_detail, container, false);
-        ButterKnife.inject(this, view);
-        return view;
+        return inflater.inflate(R.layout.fragment_weather_detail, container, false);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        long mCityId = getArguments().getLong(CITY_ID);
-
-        mSubscriptions.add(AndroidObservable
-                .bindFragment(this, mWeatherManager.getByCityId(mCityId))
-                .subscribe(this));
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        bind(weatherManager.getByCityId(cityId)).subscribe(this);
     }
 
     @Override
     public void onNext(WeatherReport weatherReport) {
         display(weatherReport);
-    }
-
-    @Override
-    public void onCompleted() {
-        //do nothing
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
     }
 
     private void display(WeatherReport weatherData) {

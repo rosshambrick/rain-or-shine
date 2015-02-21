@@ -14,13 +14,13 @@
         android:gravity="center_vertical">
 
         <ImageView
-            android:id="@+id/fragment_weather_detail_weather_image"
+            android:id="@+id/weather_detail_weather_image"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"/>
 
         <TextView
-            android:id="@+id/fragment_weather_detail_conditions"
+            android:id="@+id/weather_detail_conditions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="30dp"
@@ -33,17 +33,17 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/fragment_weather_detail_current_temperature"
+            android:id="@+id/weather_detail_current_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="60dp"
             tools:text="88F" />
 
         <TextView
-            android:id="@+id/fragment_weather_detail_high_temperature"
+            android:id="@+id/weather_detail_high_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/fragment_weather_detail_current_temperature"
+            android:layout_toRightOf="@+id/weather_detail_current_temperature"
             android:layout_marginLeft="12dp"
             android:layout_marginTop="6dp"
             android:textSize="26dp"
@@ -51,11 +51,11 @@
             tools:text="92F" />
 
         <TextView
-            android:id="@+id/fragment_weather_detail_low_temperature"
+            android:id="@+id/weather_detail_low_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/fragment_weather_detail_current_temperature"
-            android:layout_below="@+id/fragment_weather_detail_high_temperature"
+            android:layout_toRightOf="@+id/weather_detail_current_temperature"
+            android:layout_below="@+id/weather_detail_high_temperature"
             android:layout_marginLeft="12dp"
             android:layout_marginTop="-6dp"
             android:textSize="26dp"

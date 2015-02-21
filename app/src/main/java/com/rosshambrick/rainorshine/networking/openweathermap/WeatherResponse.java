@@ -3,7 +3,7 @@ package com.rosshambrick.rainorshine.networking.openweathermap;
 import com.rosshambrick.rainorshine.core.entities.WeatherReport;
 
 @SuppressWarnings("UnusedDeclaration")
-public class WeatherResponseDto {
+public class WeatherResponse {
 
     public Coordinates coord;
     public Local sys;
@@ -64,7 +64,7 @@ public class WeatherResponseDto {
         return name;
     }
 
-    public WeatherReport toCityWeather() {
+    public WeatherReport toWeatherReport() {
         WeatherReport weatherReport = new WeatherReport();
         weatherReport.setId(id);
         weatherReport.setName(name);

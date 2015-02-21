@@ -37,8 +37,8 @@ public interface OpenWeatherMapClient {
     }
 
     @GET("/weather")
-    Observable<WeatherResponseDto> getWeatherByQuery(@Query("q") String place);
+    Observable<WeatherResponse> getWeatherByQuery(@Query("q") String place);
 
     @GET("/weather")
-    Observable<WeatherResponseDto> getWeatherById(@Query("id") long id);
+    Observable<WeatherResponse> getWeatherById(@Query("id") long id);
 }

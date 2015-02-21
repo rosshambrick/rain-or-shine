@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.rosshambrick.rainorshine.controllers.MainActivity" >
+    tools:context="com.rosshambrick.rainorshine.app.WeatherListActivity" >
 
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"

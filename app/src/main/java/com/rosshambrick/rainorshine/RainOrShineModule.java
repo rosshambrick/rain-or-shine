@@ -1,12 +1,12 @@
 package com.rosshambrick.rainorshine;
 
-import com.rosshambrick.rainorshine.controllers.MainActivity;
-import com.rosshambrick.rainorshine.controllers.WeatherDetailFragment;
-import com.rosshambrick.rainorshine.controllers.WeatherFragment;
+import com.rosshambrick.rainorshine.app.WeatherListActivity;
+import com.rosshambrick.rainorshine.app.WeatherDetailFragment;
+import com.rosshambrick.rainorshine.app.WeatherListFragment;
 import com.rosshambrick.rainorshine.core.managers.CoordinatedWeatherManager;
 import com.rosshambrick.rainorshine.core.managers.WeatherManager;
-import com.rosshambrick.rainorshine.networking.geonames.GeoNamesClient;
 import com.rosshambrick.rainorshine.networking.NetworkActivity;
+import com.rosshambrick.rainorshine.networking.geonames.GeoNamesClient;
 import com.rosshambrick.rainorshine.networking.openweathermap.OpenWeatherMapClient;
 
 import javax.inject.Singleton;
@@ -16,9 +16,10 @@ import dagger.Provides;
 import rx.subjects.PublishSubject;
 
 @Module(
+        library = true,
         injects = {
-                MainActivity.class,
-                WeatherFragment.class,
+                WeatherListActivity.class,
+                WeatherListFragment.class,
                 WeatherDetailFragment.class
         }
 )

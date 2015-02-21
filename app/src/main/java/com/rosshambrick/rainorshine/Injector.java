@@ -5,11 +5,16 @@ import dagger.ObjectGraph;
 public class Injector {
     private static ObjectGraph sObjectGraph;
 
-    public static void create(ObjectGraph objectGraph) {
-        sObjectGraph = objectGraph;
+    public static void init() {
+        RainOrShineModule module = new RainOrShineModule();
+        sObjectGraph = ObjectGraph.create(module);
     }
 
-    public static void inject(Object object) {
-        sObjectGraph.inject(object);
+    public static <T> T inject(T object) {
+        return sObjectGraph.inject(object);
+    }
+
+    public static void reset() {
+        init();
     }
 }

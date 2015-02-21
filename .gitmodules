@@ -1,0 +1,3 @@
+[submodule "standardlib"]
+	path = standardlib
+	url = https://github.com/rosshambrick/standardlib.git
