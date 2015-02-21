@@ -16,7 +16,6 @@ import dagger.Provides;
 import rx.subjects.PublishSubject;
 
 @Module(
-        library = true,
         injects = {
                 WeatherListActivity.class,
                 WeatherListFragment.class,
