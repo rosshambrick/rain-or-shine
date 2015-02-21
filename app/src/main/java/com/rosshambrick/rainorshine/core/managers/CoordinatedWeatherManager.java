@@ -1,6 +1,5 @@
 package com.rosshambrick.rainorshine.core.managers;
 
-import android.support.v4.util.SparseArrayCompat;
 import android.util.Log;
 
 import com.rosshambrick.rainorshine.core.entities.WeatherReport;
@@ -14,8 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import rx.Observable;
-import rx.subjects.AsyncSubject;
-import rx.subjects.Subject;
+import rx.subjects.ReplaySubject;
 
 @Singleton
 public class CoordinatedWeatherManager implements WeatherManager {
@@ -26,9 +24,8 @@ public class CoordinatedWeatherManager implements WeatherManager {
     private GeoNamesClient geoNamesClient;
 
     // caches
-    private Subject<List<WeatherReport>, List<WeatherReport>> weatherReports;
-    private Subject<List<String>, List<String>> cityNames;
-    private SparseArrayCompat<Subject<WeatherReport, WeatherReport>> weatherReport = new SparseArrayCompat<>();
+    private ReplaySubject<List<String>> cityNames;
+//    private Observable<List<WeatherReport>> weatherReports;
 
     @Inject
     public CoordinatedWeatherManager(OpenWeatherMapClient openWeatherMapClient,
@@ -38,46 +35,29 @@ public class CoordinatedWeatherManager implements WeatherManager {
     }
 
     @Override
-    public Observable<WeatherReport> getByCityId(final int cityId) {
-        if (weatherReport.get(cityId) == null) {
-            weatherReport.put(cityId, AsyncSubject.create());
-
-            openWeatherMapClient.getWeatherById(cityId)
-                    .map(WeatherResponse::toWeatherReport)
-                    .subscribe(weatherReport.get(cityId));
-        }
-        return weatherReport.get(cityId).asObservable();
+    public Observable<WeatherReport> getByCityId(int cityId) {
+        return openWeatherMapClient.getWeatherReportById(cityId)
+                .map(WeatherResponse::toWeatherReport);
     }
 
     @Override
-    public Observable<WeatherReport> searchWeatherForCity(String name) {
-        return openWeatherMapClient.getWeatherByQuery(name)
-                .filter(weatherResponseDto -> weatherResponseDto.id != 0)
+    public Observable<WeatherReport> searchWeatherForCity(String cityName) {
+        return openWeatherMapClient.search(cityName)
+                .filter(weatherResponse -> weatherResponse.id != 0)
                 .map(WeatherResponse::toWeatherReport);
     }
 
     @Override
     public Observable<List<WeatherReport>> getAll() {
-        if (weatherReports == null) {
-            weatherReports = AsyncSubject.create();
-
-            getCitySearchTerms()
-                    .flatMap(Observable::from)
-                    .flatMap(this::searchWeatherForCity)
-                    .toSortedList(this::sort)
-                    .subscribe(weatherReports);
-        }
-
-        return weatherReports.asObservable();
+        return getCityNames()
+                .flatMap(Observable::from)
+                .flatMap(this::searchWeatherForCity)
+                .toSortedList(this::sort);
     }
 
-    private int sort(WeatherReport weatherReport1, WeatherReport weatherReport2) {
-        return weatherReport1.getName().compareToIgnoreCase(weatherReport2.getName());
-    }
-
-    private Observable<List<String>> getCitySearchTerms() {
+    private Observable<List<String>> getCityNames() {
         if (cityNames == null) {
-            cityNames = AsyncSubject.create();
+            cityNames = ReplaySubject.create(1);
 
             geoNamesClient.getCities()
                     .flatMap(cities -> Observable.from(cities.geonames))
@@ -90,6 +70,10 @@ public class CoordinatedWeatherManager implements WeatherManager {
         }
         Log.d(TAG, "Returning city names");
         return cityNames.asObservable();
+    }
+
+    private int sort(WeatherReport weatherReport1, WeatherReport weatherReport2) {
+        return weatherReport1.getName().compareToIgnoreCase(weatherReport2.getName());
     }
 
 }

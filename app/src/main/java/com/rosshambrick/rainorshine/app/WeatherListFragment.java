@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,11 +32,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import rx.Observable;
 import rx.Observer;
 
 public class WeatherListFragment extends RainOrShineFragment
         implements AdapterView.OnItemClickListener, Observer<List<WeatherReport>> {
-    private static final String TAG = "WeatherFragment";
+    private static final String TAG = "WeatherListFragment";
 
     public static final int REQUEST_SEARCH = 0;
 
@@ -44,11 +46,15 @@ public class WeatherListFragment extends RainOrShineFragment
     @InjectView(R.id.fragment_main_list) ListView listView;
 
     private WeatherDataAdapter adapter;
+    private Observable<List<WeatherReport>> allCities;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        setRetainInstance(true);
+        allCities = weatherManager.getAll().cache();
     }
 
     @Override
@@ -64,7 +70,7 @@ public class WeatherListFragment extends RainOrShineFragment
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
 
-        bind(weatherManager.getAll()).subscribe(this);
+        bind(allCities).subscribe(this);
     }
 
     @Override
@@ -100,14 +106,11 @@ public class WeatherListFragment extends RainOrShineFragment
         Bundle fragmentArgs = new Bundle();
         fragmentArgs.putInt(WeatherDetailFragment.ARGS_WEATHER_ID, (int) itemId);
         startActivity(SingleFragmentActivity.newIntent(getActivity(), WeatherDetailFragment.class, fragmentArgs));
-//        getFragmentManager().beginTransaction()
-//                .replace(R.id.container, WeatherDetailFragment.newInstance((int) itemId))
-//                .addToBackStack(null)
-//                .commit();
     }
 
     @Override
     public void onNext(List<WeatherReport> weatherReport) {
+        Log.d(TAG, "Refreshing city list");
         adapter.addAll(weatherReport);
     }
 

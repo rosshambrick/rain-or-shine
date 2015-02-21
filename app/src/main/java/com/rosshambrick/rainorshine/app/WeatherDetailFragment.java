@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import rx.Observable;
 import rx.Observer;
 
 public class WeatherDetailFragment extends RainOrShineFragment implements Observer<WeatherReport> {
@@ -32,6 +33,7 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
     @InjectView(R.id.weather_detail_conditions) TextView mWeatherConditions;
 
     private int cityId;
+    private Observable<WeatherReport> cityWeatherReport;
 
     public static Fragment newInstance(int id) {
         Fragment fragment = new WeatherDetailFragment();
@@ -45,6 +47,9 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cityId = getArguments().getInt(ARGS_WEATHER_ID);
+
+        setRetainInstance(true);
+        cityWeatherReport = weatherManager.getByCityId(cityId).cache();
     }
 
     @Override
@@ -55,7 +60,7 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        bind(weatherManager.getByCityId(cityId)).subscribe(this);
+        bind(cityWeatherReport).subscribe(this);
     }
 
     @Override

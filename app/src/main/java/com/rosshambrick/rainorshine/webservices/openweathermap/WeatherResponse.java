@@ -13,7 +13,7 @@ public class WeatherResponse {
     public Wind wind;
     public Rain rain;
     public Cloud clouds;
-    public long id;
+    public int id;
     public long dt;
     public String name;
     public int cod;

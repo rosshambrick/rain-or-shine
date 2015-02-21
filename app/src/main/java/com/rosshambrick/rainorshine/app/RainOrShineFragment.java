@@ -18,9 +18,6 @@ public class RainOrShineFragment extends RxFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-            Injector.init();
-        }
         Injector.inject(this);
     }
 

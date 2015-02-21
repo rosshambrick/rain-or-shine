@@ -17,6 +17,9 @@ public interface OpenWeatherMapClient {
             return new RestAdapter.Builder()
                     .setEndpoint("http://api.openweathermap.org/data/2.5")
                     .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .setRequestInterceptor(request -> {
+                        request.addQueryParam("APPID", "d7a15a2cfa97fe82b402d8da342eec37");
+                    })
                     .setErrorHandler(retrofitError -> {
                         networkSubject.onError(retrofitError);
                         return retrofitError;
@@ -37,8 +40,8 @@ public interface OpenWeatherMapClient {
     }
 
     @GET("/weather")
-    Observable<WeatherResponse> getWeatherByQuery(@Query("q") String place);
+    Observable<WeatherResponse> search(@Query("q") String place);
 
     @GET("/weather")
-    Observable<WeatherResponse> getWeatherById(@Query("id") long id);
+    Observable<WeatherResponse> getWeatherReportById(@Query("id") long id);
 }

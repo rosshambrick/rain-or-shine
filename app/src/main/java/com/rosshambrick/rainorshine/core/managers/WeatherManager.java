@@ -5,6 +5,7 @@ import com.rosshambrick.rainorshine.core.entities.WeatherReport;
 import java.util.List;
 
 import rx.Observable;
+
 /*
      A facade for which Fragments and Activities can use to
      get the data needed to display without understanding
