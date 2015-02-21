@@ -26,13 +26,12 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
 
     @Inject WeatherManager weatherManager;
 
-    @InjectView(R.id.weather_detail_current_temperature) TextView mCurrentTemperature;
-    @InjectView(R.id.weather_detail_high_temperature) TextView mHighTemperature;
-    @InjectView(R.id.weather_detail_low_temperature) TextView mLowTemperature;
-    @InjectView(R.id.weather_detail_weather_image) ImageView mWeatherImage;
-    @InjectView(R.id.weather_detail_conditions) TextView mWeatherConditions;
+    @InjectView(R.id.weather_detail_current_temperature) TextView currentTemperature;
+    @InjectView(R.id.weather_detail_high_temperature) TextView highTemperature;
+    @InjectView(R.id.weather_detail_low_temperature) TextView lowTemperature;
+    @InjectView(R.id.weather_detail_weather_image) ImageView weatherImage;
+    @InjectView(R.id.weather_detail_conditions) TextView weatherConditions;
 
-    private int cityId;
     private Observable<WeatherReport> cityWeatherReport;
 
     public static Fragment newInstance(int id) {
@@ -46,7 +45,8 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cityId = getArguments().getInt(ARGS_WEATHER_ID);
+
+        int cityId = getArguments().getInt(ARGS_WEATHER_ID);
 
         setRetainInstance(true);
         cityWeatherReport = weatherManager.getByCityId(cityId).cache();
@@ -70,12 +70,12 @@ public class WeatherDetailFragment extends RainOrShineFragment implements Observ
 
     private void display(WeatherReport weatherData) {
         getActivity().setTitle(weatherData.getName());
-        mCurrentTemperature.setText(weatherData.getFormattedCurrentTempInFahrenheit());
-        mHighTemperature.setText(weatherData.getFormattedHighTempInFahrenheit());
-        mLowTemperature.setText(weatherData.getFormattedLowTempInFahrenheit());
-        mWeatherConditions.setText(weatherData.getWeatherConditions());
+        currentTemperature.setText(weatherData.getFormattedCurrentTempInFahrenheit());
+        highTemperature.setText(weatherData.getFormattedHighTempInFahrenheit());
+        lowTemperature.setText(weatherData.getFormattedLowTempInFahrenheit());
+        weatherConditions.setText(weatherData.getWeatherConditions());
         Picasso.with(getActivity())
                 .load(String.format(OpenWeatherMapClient.WEATHER_ICON_FORMAT, weatherData.getWeatherImageUrl()))
-                .into(mWeatherImage);
+                .into(weatherImage);
     }
 }
